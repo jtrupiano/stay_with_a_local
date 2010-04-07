@@ -4,7 +4,7 @@ require 'compass' # must be loaded before sinatra
 
 # Load Sinatra
 require 'sinatra'
-require 'lib/render_partial'
+require File.dirname(__FILE__) + '/lib/render_partial'
 
 # Load after Sinatra -- Move to geminstaller / bundler
 require 'haml' # must be loaded after sinatra
