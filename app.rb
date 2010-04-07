@@ -11,12 +11,6 @@ require 'haml' # must be loaded after sinatra
 require 'compass'
 require 'ninesixty'
 
-# Set Sinatra's variables
-# set :app_file, __FILE__
-# set :root, File.dirname(__FILE__)
-# set :views, 'views'
-# set :public, 'public'
-
 # Configure Compass
 configure do
   Compass.configuration.parse(File.join(Sinatra::Application.root, 'config.rb'))
