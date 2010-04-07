@@ -1,1 +1,1 @@
-The "Bmore on Rails"{http://bmoreonrails.org/} crew will be hosting speakers for "RailsConf 2010"{http://railsconf.org}.  This app (currently just an HTML mockup) will showcase the Baltimore Rubyists providing rooms for lodging and allow speakers to reserve a room.
+The [Bmore on Rails](http://bmoreonrails.org/) crew will be hosting speakers for [RailsConf 2010](http://railsconf.org).  This app (currently just an HTML mockup) will showcase the Baltimore Rubyists providing rooms for lodging and allow speakers to reserve a room.
