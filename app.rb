@@ -24,5 +24,5 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
-  haml :index, :layout => :'layouts/application'
+  haml :index, :layout => :'layouts/page'
 end
