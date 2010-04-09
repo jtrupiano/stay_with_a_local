@@ -1,3 +1,6 @@
+:javascript
+  var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path])};
+
 #map
   #header.grid_12
     .grid_2.alpha
@@ -9,13 +12,13 @@
       %img{:src => '/gmap.png'}
       #hosts
         - Host.all(:order => "name").each do |host|
-          %img{:src => host.image_path, :alt => host.name }
-    .grid_4.omega
+          %img{:id => "host_#{host.id}", :src => host.image_path, :alt => host.name }
+    #selected_host.grid_4.omega
       .container_4
         .grid_2.alpha
-          %img{:src => '/davetroy.jpg'}
+          %img
         .grid_2.omega
-          %h3 Dave Troy
+          %h3
       .container_4
         .grid_4
           %p Yo, I've got this house, it's in Bolton Hill, I just bought it.  Rock.
@@ -23,3 +26,23 @@
           %button
             Stay with Dave!
           %p 
+
+:javascript
+  function showHost(host) {
+    $('#selected_host h3').html(host.name);
+    $('#selected_host img').attr("src", host.image_path);
+  }
+
+  $('#hosts img').click(function() {
+    var selected_host_id = this.id.match(/host_(\d)+/)[1];
+    var host;
+    $.each(hosts, function(index, h) {
+      if (h.id == selected_host_id) {
+        host = h;
+      }
+    });
+    if (!host) { alert('not found'); }
+    showHost(host);
+  });
+  
+  $($('#hosts img')[0]).click();
