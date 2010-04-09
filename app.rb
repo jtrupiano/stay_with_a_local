@@ -26,3 +26,7 @@ end
 get '/' do
   haml :index, :layout => :'layouts/page'
 end
+
+get '/map' do
+  haml :map, :layout => :'/layouts/page'
+end
