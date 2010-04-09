@@ -16,6 +16,10 @@ configure do
   Compass.configuration.parse(File.join(Sinatra::Application.root, 'config.rb'))
 end
 
+# Load models
+# WARNING: This will always rebuild the whole database
+require File.join(File.dirname(__FILE__), 'db/seeds')
+
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
 get '/stylesheets/:name.css' do

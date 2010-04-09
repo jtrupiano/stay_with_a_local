@@ -7,4 +7,9 @@ class Host
   property :lon, Float
   
   has n, :rooms
+  
+  def image_path
+    "/images/hosts/#{name.to_s.gsub(' ','_').downcase}.jpg"
+  end
+  
 end

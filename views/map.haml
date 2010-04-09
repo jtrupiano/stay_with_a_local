@@ -8,14 +8,8 @@
     .grid_8.alpha
       %img{:src => '/gmap.png'}
       #hosts
-        %img{:src => '/davetroy.jpg'}
-        %img{:src => '/davetroy.jpg'}
-        %img{:src => '/davetroy.jpg'}
-        %img{:src => '/davetroy.jpg'}
-        %img{:src => '/davetroy.jpg'}
-        %img{:src => '/davetroy.jpg'}
-        %img{:src => '/davetroy.jpg'}
-        %img{:src => '/davetroy.jpg'}
+        - Host.all(:order => "name").each do |host|
+          %img{:src => host.image_path, :alt => host.name }
     .grid_4.omega
       .container_4
         .grid_2.alpha
