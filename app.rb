@@ -23,14 +23,6 @@ get '/stylesheets/:name.css' do
   sass(:"stylesheets/#{params[:name]}", Compass.sass_engine_options)
 end
 
-get '/about' do
-  haml :about, :layout => :'layouts/page'
-end
-
 get '/' do
   haml :index, :layout => :'layouts/application'
-end
-
-get '/local' do
-  haml :local, :layout => :'layouts/page'
 end
