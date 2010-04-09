@@ -1,0 +1,79 @@
+            Fabio  Akita @akitaonrails
+             Sarah Allen @ultrasaurus
+              Andre Arko @indirect
+            John Athayde @boboroshi
+             Kyle Banker @hwaet
+            Steven Bazyl @stevenbazyl
+             Aaron Bedra @abedra
+        Nathaniel Bibler @nbibler
+          Michael Bleigh @mbleigh
+            Rick Bradley @rickbradley
+              Ryan Brown 
+          Michael Bryzek @mbryzek
+      Michael Buffington @go
+         Dirkjan Bussink @dbussink
+           Paul Campbell @paulca
+         David Chelimsky @dchelimsky
+              Mike Clark @clarkware 
+           Blythe Dunham 
+            Anthony Eden @aeden
+             Cody Fauser @codyfauser
+        Michael Feathers 
+          Obie Fernandez @obie
+              Joe Ferris @joeferris
+              Vic Fryzel @vicfryzel
+            James Golick @jamesgolick
+           Ilya Grigorik @igrigorik
+                 Lei Guo 
+              Aman Gupta @tmm1
+            Marty Haught @mghaught
+David Heinemeier Hansson @dhh
+          Aslak Hellesoy @aslak_hellesoy
+             Elise Huard @elise_huard
+          Michael Johann @malagant
+           Durran Jordan @modetojoy
+             Yehuda Katz @wycats
+           Jeremy Kemper @bitsweat
+               Adam Keys @therealadam
+             Rich Kilmer @rich_kilmer
+       Michael Koziarski @nzkoz
+          Mikel Lindsaar @raasdnil
+           Michael  Lopp @rands
+              Pat Maddox @patmaddox
+           Robert Martin @unclebobmartin
+             Jess Martin @jessmartin
+         Jeremy McAnally @jm
+            Thomas Meeks @thomasmeeks
+               Sarah Mei @sarahmei
+           Marcel Molina @noradio
+         Alberto Morales 
+           Jesse Newland @jnewland
+        Clinton R. Nixon @crnixon
+          John Nunemaker @jnunemaker
+          Charles Nutter @headius
+      Benjamin Orenstein @r00k
+              Josh Owens @joshowens
+         Jonathan Palley 
+         Aaron Patterson @tenderlove
+           Evan  Phoenix @evanphx
+           Gregg Pollack greggpollack
+              Chad Pytel @cpytel
+           Nick Quaranto @qrush
+                Sam Ruby @samruby
+            Tammer Saleh @tsaleh
+             Flip Sasser @flipsasser
+          Sean Schofield @railsdog
+         Wayne E. Seguin @wayneeseguin
+             Nick Sieger @nicksieger
+            Dan Sinclair @dj2sincl
+            Derek Sivers @sivers
+           Jacob Swanner @jswanner
+       Nathaniel Talbott @ntalbott
+        Glenn Vanderburg @glv
+         Gary Vaynerchuk @garyvee
+         Chris Wanstrath @defunkt
+             Jim Weirich @jimweirich
+             Joseph Wilk @josephwilk
+         Dr Nic Williams @drnic
+            Derek Willis @derekwillis
+            John Woodell @johnwoodell
