@@ -1,0 +1,8 @@
+%h1 Book A Room With #{@host.name}
+
+%form{ :method => "POST", :action => "/hosts/#{@host.id}/room_requests"}
+  %label{ :for => "comments" } Comments
+  %br
+  %textarea{ :id => "comments", :name => "comments", :rows => 15, :cols => 80 }
+  %br
+  %button{ :type => "submit" } Stay With #{@host.name}!

@@ -5,5 +5,5 @@ class Guest
   property :name, String
   property :twitter, String
   
-  has 1, :room
+  has 1, :room_request
 end
