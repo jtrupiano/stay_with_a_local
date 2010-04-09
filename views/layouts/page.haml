@@ -12,5 +12,8 @@
     %script{:type => "text/javascript", :src => "javascripts/site.js"}
   %body
     .container_12
+      #header.grid_12
+        %h1 Stay with a Local
+        %img.logo{:src => '/bmore-on-rails.png'}
       = yield
       = partial :_analytics
