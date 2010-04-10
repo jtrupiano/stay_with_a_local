@@ -9,7 +9,7 @@
       %h1 Stay with a Local
   .container_12
     .grid_8.alpha
-      %img{:src => '/gmap.png'}
+      #map_canvas{:style => 'height:400px;width:600px;'}
       #hosts
         - Host.all(:order => "name").each do |host|
           %img{:id => "host_#{host.id}", :src => host.image_path }
@@ -26,7 +26,23 @@
           %p#description
 
 :javascript
-  function showHost(host) {
+  function showHost(host, map) {
+    // remove any existing markers
+    $.each(hosts, function(i,host) {
+      if (host.marker) {
+        host.marker.setMap(null);
+      }
+    });
+    if (host.lat && host.lon) {
+      var ll = new google.maps.LatLng(host.lat, host.lon);
+      map.panTo(ll);
+      host.marker = new google.maps.Marker({
+        position: ll, 
+        map: map,
+        title: host.name
+      });
+    }
+    $('#selected_host').hide();
     $('#selected_host h3').html(host.name);
     $('#selected_host img').attr("src", host.image_path);
     $('#selected_host img').attr("alt", host.name);
@@ -37,18 +53,34 @@
     }
     $('#selected_host #rooms_available').html(rooms_str);
     $('#selected_host #stay').html("Stay with " + host.first_name);
+    $('#selected_host').fadeIn('slow');
   }
 
-  $('#hosts img').click(function() {
-    var selected_host_id = this.id.match(/host_(\d)+/)[1];
-    var host;
-    $.each(hosts, function(index, h) {
-      if (h.id == selected_host_id) {
-        host = h;
-      }
+  $(document).ready(function() {
+    var convention_center = new google.maps.LatLng(39.285685,-76.616936);
+    var map = new google.maps.Map(document.getElementById("map_canvas"), {
+      zoom: 10,
+      center: convention_center,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-    if (!host) { alert('not found'); }
-    showHost(host);
+    var marker = new google.maps.Marker({
+      position: convention_center, 
+      map: map,
+      icon: 'red_flag_30.png',
+      title: "Railsconf - at the Baltimore Convention Center"
+    });
+
+    $('#hosts img').click(function() {
+      var selected_host_id = this.id.match(/host_(\d)+/)[1];
+      var host;
+      $.each(hosts, function(index, h) {
+        if (h.id == selected_host_id) {
+          host = h;
+        }
+      });
+      if (!host) { alert('not found'); }
+      showHost(host, map);
+    });
+
+    $('#selected_host').hide();
   });
-  
-  $($('#hosts img')[0]).click();
