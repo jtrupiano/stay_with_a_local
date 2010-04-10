@@ -37,12 +37,12 @@
     });
     if (host.lat && host.lon) {
       var ll = new google.maps.LatLng(host.lat, host.lon);
-      map.panTo(ll);
       host.marker = new google.maps.Marker({
         position: ll, 
         map: map,
         title: host.name
       });
+      map.panTo(ll);
     }
     $('#selected_host').hide();
     $('#selected_host h3').html(host.name);
@@ -72,7 +72,7 @@
   $(document).ready(function() {
     var convention_center = new google.maps.LatLng(39.285685,-76.616936);
     var map = new google.maps.Map(document.getElementById("map_canvas"), {
-      zoom: 10,
+      zoom: 11,
       center: convention_center,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
