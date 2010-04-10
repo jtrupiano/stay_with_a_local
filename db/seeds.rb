@@ -27,3 +27,6 @@ guests.each do |line|
     puts "Problem with #{line}: #{ex.class} - #{ex.message}"
   end
 end
+
+rr = RoomRequest.create(:host => Host.first, :guest => Guest.first)
+rr.accept

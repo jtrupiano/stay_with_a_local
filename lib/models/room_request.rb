@@ -9,6 +9,10 @@ class RoomRequest
   belongs_to :host
   belongs_to :guest
   
+  def self.accepted
+    all(:accepted_at.not => nil)
+  end
+  
   def accept
     # TODO: How do you do transactions in DM?
     self.accepted_at = Time.now

@@ -18,4 +18,8 @@ class Host
     name.split[0]
   end
   
+  def guests
+    room_requests.accepted.guest
+  end
+  
 end

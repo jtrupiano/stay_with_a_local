@@ -1,5 +1,5 @@
 :javascript
-  var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name])};
+  var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
 #map
   #header.grid_12
@@ -24,6 +24,8 @@
       .container_4
         .grid_4
           %p#description
+          %h4#staying_with
+          #guests
 
 :javascript
   function showHost(host, map) {
@@ -53,6 +55,17 @@
     }
     $('#selected_host #rooms_available').html(rooms_str);
     $('#selected_host #stay').html("Stay with " + host.first_name);
+    if (host.guests.length > 0) {
+      $('#staying_with').text("Staying with " + host.first_name);
+      var guests_html = "";
+      $.each(host.guests, function(index, guest) {
+        guests_html += "<p>" + guest.name + "</p>";
+      });
+      $('#guests').html(guests_html);
+    } else {
+      $('#staying_with').text('');
+      $('#guests').html('');
+    }
     $('#selected_host').fadeIn('slow');
   }
 
