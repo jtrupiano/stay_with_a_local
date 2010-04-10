@@ -1,5 +1,5 @@
 :javascript
-  var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path])};
+  var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name])};
 
 #map
   #header.grid_12
@@ -12,25 +12,31 @@
       %img{:src => '/gmap.png'}
       #hosts
         - Host.all(:order => "name").each do |host|
-          %img{:id => "host_#{host.id}", :src => host.image_path, :alt => host.name }
+          %img{:id => "host_#{host.id}", :src => host.image_path }
     #selected_host.grid_4.omega
       .container_4
         .grid_2.alpha
           %img
         .grid_2.omega
           %h3
+          %p#rooms_available
+          %button#stay
       .container_4
         .grid_4
-          %p Yo, I've got this house, it's in Bolton Hill, I just bought it.  Rock.
-          %p Dave has 1 room available
-          %button
-            Stay with Dave!
-          %p 
+          %p#description
 
 :javascript
   function showHost(host) {
     $('#selected_host h3').html(host.name);
     $('#selected_host img').attr("src", host.image_path);
+    $('#selected_host img').attr("alt", host.name);
+    $('#selected_host #description').html(host.description);
+    var rooms_str = "has " + host.available_rooms + " available room";
+    if (host.available_rooms != 1) {
+      rooms_str += "s";
+    }
+    $('#selected_host #rooms_available').html(rooms_str);
+    $('#selected_host #stay').html("Stay with " + host.first_name);
   }
 
   $('#hosts img').click(function() {
