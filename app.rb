@@ -9,6 +9,7 @@ require 'lib/render_partial'
 # Load after Sinatra -- Move to geminstaller / bundler
 require 'haml' # must be loaded after sinatra
 require 'ninesixty'
+require 'ruby-debug'
 
 # Configure Compass
 configure do
@@ -17,7 +18,7 @@ configure do
 end
 
 # Load models
-# WARNING: This will always rebuild the whole database
+# TODO: WARNING: This will always rebuild the whole database
 require File.join(File.dirname(__FILE__), 'db/seeds')
 require 'mailer'
 
@@ -41,9 +42,32 @@ get '/hosts/:id/room_requests/new' do
 end
 
 post '/hosts/:id/room_requests' do
-  @host = Host.get(params[:id])
-  @guest = Guest.get(session[:guest_id])
-  room_request = RoomRequest.create :host => @host, :guest => @guest, :comments => params[:comments]
+  host = Host.get(params[:id])
+  guest = Guest.get(session[:guest_id])
+  room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments]
   Mailer.send_request_email(room_request)
+  # TODO: set a flash
+  redirect "/"
+end
+
+get '/room_requests/:id/accept/:token' do
+  room_request = RoomRequest.get(params[:id])
+  if room_request.token != params[:token]
+    return "Unable to find this request"
+  end
+  room_request.accept
+  # TODO: set a flash
+  # TODO: send email
+  redirect "/"
+end
+
+get '/room_requests/:id/decline/:token' do
+  room_request = RoomRequest.get(params[:id])
+  if room_request.token != params[:token]
+    return "Unable to find this request"
+  end
+  room_request.decline
+  # TODO: set a flash
+  # TODO: send email
   redirect "/"
 end

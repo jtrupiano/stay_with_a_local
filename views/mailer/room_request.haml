@@ -3,9 +3,9 @@
 %blockquote #{room_request.comments}
 %p
   You can either
-  %a{:href => "#{host}/room_requests/#{room_request.id}/accept"} accept the request
+  %a{:href => "#{host}/room_requests/#{room_request.id}/accept/#{room_request.token}"} accept the request
   or 
-  %a{:href => "#{host}/room_requests/#{room_request.id}/reject"} deny the request
+  %a{:href => "#{host}/room_requests/#{room_request.id}/decline/#{room_request.token}"} decline the request
   \.
 %p Best,
 %p The Bmore on Rails "Stay with a Local" app
