@@ -7,6 +7,7 @@ class Host
   property :lat, Float
   property :lon, Float
   property :available_rooms, Integer
+  property :twitter, String, :length => 20
   property :description, String, :length => 2000
   
   has n, :room_requests

@@ -13,6 +13,8 @@
     .grid_2.omega
       %h3
       %p#rooms_available
+      %p
+        %a#twitter{:target => '_blank'}
       %a#stay
   .container_4
     .grid_4
@@ -47,6 +49,8 @@
       rooms_str += "s";
     }
     $('#selected_host #rooms_available').html(rooms_str);
+    $('#selected_host #twitter').html("@" + host.twitter);
+    $('#selected_host #twitter').attr('href', 'http://twitter.com/' + host.twitter);
     $('#selected_host #stay').html("Stay with " + host.first_name);
     $('#selected_host #stay').attr('href', "/hosts/" + host.id + '/room_requests/new');
     if (host.guests.length > 0) {

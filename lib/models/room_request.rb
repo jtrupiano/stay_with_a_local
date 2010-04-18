@@ -20,6 +20,7 @@ class RoomRequest
   
   def accept
     # TODO: How do you do transactions in DM?
+    # TODO: decline/delete all other requests made by the guest
     self.accepted_at = Time.now
     host.available_rooms -= 1
     host.save
