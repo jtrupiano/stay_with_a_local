@@ -3,6 +3,7 @@ class Host
 
   property :id, Serial
   property :name, String
+  property :email, String
   property :lat, Float
   property :lon, Float
   property :available_rooms, Integer

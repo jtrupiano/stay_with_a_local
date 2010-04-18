@@ -8,7 +8,6 @@ require 'lib/render_partial'
 
 # Load after Sinatra -- Move to geminstaller / bundler
 require 'haml' # must be loaded after sinatra
-require 'compass'
 require 'ninesixty'
 
 # Configure Compass
@@ -20,6 +19,7 @@ end
 # Load models
 # WARNING: This will always rebuild the whole database
 require File.join(File.dirname(__FILE__), 'db/seeds')
+require 'mailer'
 
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
@@ -43,6 +43,7 @@ end
 post '/hosts/:id/room_requests' do
   @host = Host.get(params[:id])
   @guest = Guest.get(session[:guest_id])
-  RoomRequest.create :host => @host, :guest => @guest
+  room_request = RoomRequest.create :host => @host, :guest => @guest, :comments => params[:comments]
+  Mailer.send_request_email(room_request)
   redirect "/"
 end

@@ -1,0 +1,11 @@
+%p Hi #{room_request.host.first_name},
+%p #{room_request.guest.name} has requested to stay with you during RailsConf.  He left the following message:
+%blockquote #{room_request.comments}
+%p
+  You can either
+  %a{:href => "#{host}/room_requests/#{room_request.id}/accept"} accept the request
+  or 
+  %a{:href => "#{host}/room_requests/#{room_request.id}/reject"} deny the request
+  \.
+%p Best,
+%p The Bmore on Rails "Stay with a Local" app
