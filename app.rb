@@ -29,11 +29,7 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
-  haml :index, :layout => :'layouts/page'
-end
-
-get '/map' do
-  haml :map, :layout => :'/layouts/page'
+  haml :index, :layout => :'/layouts/page'
 end
 
 get '/hosts/:id/room_requests/new' do

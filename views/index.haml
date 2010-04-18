@@ -1,48 +1,93 @@
-#index
-  #header.grid_12
-    %h1 Stay with a Local
-    %img.logo{:src => '/bmore-on-rails.png'}
+:javascript
+  var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
-    .prefix_2.grid_8.suffix_2
-      .description
-        Hey, you're speaking at RailsConf.  And we've got rooms for you!  Cancel your hotel reservations 
-        (if you've made them) and choose one of our fine community members below who have opened up their
-        homes for you.  Every room has a door to allow you your privacy.
+.grid_8.alpha
+  #map_canvas{:style => 'height:400px;width:600px;'}
+  #hosts
+    - Host.all(:order => "name").each do |host|
+      %img{:id => "host_#{host.id}", :src => host.image_path }
+#selected_host.grid_4.omega
+  .container_4
+    .grid_2.alpha
+      %img
+    .grid_2.omega
+      %h3
+      %p#rooms_available
+      %a#stay
+  .container_4
+    .grid_4
+      %p#description
+      %h4#staying_with
+      #guests
 
-    .available
-      %h2 Find a Local
-      .local
-        .grid_4.alpha
-          %img{:src => 'http://a1.twimg.com/profile_images/444906846/twitterProfilePhoto_bigger.jpg'}
-        .grid_4
-          %h4 Dave Troy
-          %p Yo, I've got this house, it's in Bolton Hill, I just bought it.  Rock.
-          %button
-            Stay with Dave!
-        .grid_4.omega
-          %img{:src => 'http://maps.google.com/maps/api/staticmap?center=Baltimore,MD&zoom=14&size=300x150&sensor=false'}
-      .clear
-  
-      .local
-        .grid_4.alpha
-          %img{:src => 'http://www.facebook.com/profile/pic.php?oid=AAAAAQAQJQGl-X6kFbYjsd34CliQJAAAAAnGLPkx6BvcbiYgrek1FIV6'}
-        .grid_4
-          %h4 Matt Scilipoti
-          %p Hey, this guy is one interesting dude.  He's a talkative guy and one heckuva coder!  Plus he's got a room for you to stay in.
-          %button
-            Stay with Matt!
-        .grid_4.omega
-          %img{:src => 'http://maps.google.com/maps/api/staticmap?center=Baltimore,MD&zoom=14&size=300x150&sensor=false'}
-      .clear
-  
-    .reserved
-      %h2 Already Reserved Locals
-      .local
-        .grid_4.alpha
-          %img{:src => 'http://photos3.meetupstatic.com/photos/member/9/e/6/9/member_1480553.jpeg'}
-        .grid_4
-          %h4 Nick Evans
-          %p It might look like he's got long hair, but you apparently haven't seen the rest of the Baltimore crew.  In any case, Nick is another fine gentleman and would be a catch for any would-be room crasher.
-        .grid_4.omega
-          %img{:src => 'http://maps.google.com/maps/api/staticmap?center=Baltimore,MD&zoom=14&size=300x150&sensor=false'}
-      .clear
+:javascript
+  function showHost(host, map) {
+    // remove any existing markers
+    $.each(hosts, function(i,host) {
+      if (host.marker) {
+        host.marker.setMap(null);
+      }
+    });
+    if (host.lat && host.lon) {
+      var ll = new google.maps.LatLng(host.lat, host.lon);
+      host.marker = new google.maps.Marker({
+        position: ll, 
+        map: map,
+        title: host.name
+      });
+      map.panTo(ll);
+    }
+    $('#selected_host').hide();
+    $('#selected_host h3').html(host.name);
+    $('#selected_host img').attr("src", host.image_path);
+    $('#selected_host img').attr("alt", host.name);
+    $('#selected_host #description').html(host.description);
+    var rooms_str = "has " + host.available_rooms + " available room";
+    if (host.available_rooms != 1) {
+      rooms_str += "s";
+    }
+    $('#selected_host #rooms_available').html(rooms_str);
+    $('#selected_host #stay').html("Stay with " + host.first_name);
+    $('#selected_host #stay').attr('href', "/hosts/" + host.id + '/room_requests/new');
+    if (host.guests.length > 0) {
+      $('#staying_with').text("Staying with " + host.first_name);
+      var guests_html = "";
+      $.each(host.guests, function(index, guest) {
+        guests_html += "<p>" + guest.name + "</p>";
+      });
+      $('#guests').html(guests_html);
+    } else {
+      $('#staying_with').text('');
+      $('#guests').html('');
+    }
+    $('#selected_host').fadeIn('slow');
+  }
+
+  $(document).ready(function() {
+    var convention_center = new google.maps.LatLng(39.285685,-76.616936);
+    var map = new google.maps.Map(document.getElementById("map_canvas"), {
+      zoom: 11,
+      center: convention_center,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+    var marker = new google.maps.Marker({
+      position: convention_center, 
+      map: map,
+      icon: 'red_flag_30.png',
+      title: "Railsconf - at the Baltimore Convention Center"
+    });
+
+    $('#hosts img').click(function() {
+      var selected_host_id = this.id.match(/host_(\d)+/)[1];
+      var host;
+      $.each(hosts, function(index, h) {
+        if (h.id == selected_host_id) {
+          host = h;
+        }
+      });
+      if (!host) { alert('not found'); }
+      showHost(host, map);
+    });
+
+    $('#selected_host').hide();
+  });
