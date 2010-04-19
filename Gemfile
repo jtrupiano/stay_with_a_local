@@ -1,5 +1,7 @@
 # Using bundler 0.9.21
 
+source 'http://rubygems.org'
+
 gem 'compass', '= 0.8.17'
 gem 'sinatra', '= 1.0'
 gem 'compass-960-plugin', '= 0.9.11'
