@@ -6,11 +6,16 @@ require "host"
 require "guest"
 require "room_request"
 
-configure :development do
+configure :development, :test do
   DataMapper::Logger.new($stdout, :debug)
+  DataMapper.setup(:default, 'postgres://localhost/stay_with_a_local')
+  # DataMapper.setup(:default, 'mysql://localhost/stay_with_a_local')
 end
-DataMapper.setup(:default, ENV['DATABASE_URL'] || 'postgres://localhost/stay_with_a_local')
-# DataMapper.setup(:default, 'mysql://localhost/stay_with_a_local')
+
+configure :production do
+  load 'db/setup.rb'
+end
+
 DataMapper.auto_migrate!
 
 hosts = YAML.load(File.read(File.join(File.dirname(__FILE__), "hosts.yml")))
