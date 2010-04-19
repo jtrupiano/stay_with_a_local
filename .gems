@@ -1,5 +1,5 @@
 compass --version '= 0.8.17'
 sinatra --version = '1.0'
-compass-960-plugin '= 0.9.11'
-datamapper '= 0.10.2'
-mail '= 2.2.0'
+compass-960-plugin --version '= 0.9.11'
+datamapper --version '= 0.10.2'
+mail --version '= 2.2.0'
