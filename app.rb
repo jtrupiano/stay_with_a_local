@@ -20,8 +20,10 @@ configure do
 end
 
 # Load models
+require File.join(File.dirname(__FILE__), 'db/setup')
 # TODO: WARNING: This will always rebuild the whole database
 require File.join(File.dirname(__FILE__), 'db/seeds')
+
 require 'mailer'
 
 # At a minimum the main sass file must reside within the views directory
