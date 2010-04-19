@@ -13,7 +13,7 @@ configure :development, :test do
 end
 
 configure :production do
-  load 'db/setup.rb'
+  load 'db/config.rb'
 end
 
 DataMapper.auto_migrate!
