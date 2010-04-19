@@ -2,11 +2,12 @@
   var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
 .grid_8.alpha
-  #map_canvas{:style => 'height:400px;width:600px;'}
+  #map_canvas{:style => 'height:400px;width:600px;margin-bottom:15px'}
+  %p Click the photos beneath the map to see where our homes are in relation to the convention center.
   #hosts
     - Host.all(:order => "name").each do |host|
       %img{:id => "host_#{host.id}", :src => host.image_path }
-#selected_host.grid_4.omega
+.grid_4.omega#selected_host
   .container_4
     .grid_2.alpha
       %img
@@ -17,11 +18,16 @@
         %a#twitter{:target => '_blank'}
       %a#stay
   .container_4
-    .grid_4
+    .grid_4.alpha.omega
       %p#description
       %h4#staying_with
       #guests
-
+    .grid_4.alpha.omega
+      %p 
+        In order to request a room, you must be logged into your twitter account.  We have created a
+        %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list of RailsConf speakers.
+        If you are speaking and do not see your name on this list, please tweet @bmoreonrails.
+      
 :javascript
   function showHost(host, map) {
     // remove any existing markers

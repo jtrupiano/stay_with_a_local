@@ -6,6 +6,7 @@
     %title Stay with a Local | RailsConf | Bmore on Rails
     %link{:href=>'/stylesheets/grid.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
     %link{:href=>'/stylesheets/text.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
+    %link{:href=>'/stylesheets/bmoreonrails.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
     %link{:href=>'/stylesheets/application.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
     %script{:type => "text/javascript", :src => "/javascripts/lib/jquery-1.3.2.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/plugins/jquery.qtip-1.0.0-rc3.min.js"}
@@ -13,11 +14,19 @@
     %script{:type => "text/javascript", :src => "http://maps.google.com/maps/api/js?sensor=false"}
   %body
     .container_12
-      #header.grid_12
+      #header.container_12
         .grid_2.alpha
           %img.logo{:src => '/bmore-on-rails.png'} 
-        .grid_10.omega
+        .grid_6
           %h1 Stay with a Local
+        .grid_4.omega
+          %p
+            As part of a larger effort to welcome the rails community to Baltimore for RailsConf 2010, 
+            %a{:href => 'http://bmoreonrails.org'} Bmore on Rails
+            has organized a room-share for RailsConf speakers.  We have 12 rooms available to house speakers 
+            for the duration of the conference.  We see it as an opportunity to welcome you to our city and
+            for us to create a few new friendships.
       #content.container_12
         = yield
     = partial :_analytics
+    
