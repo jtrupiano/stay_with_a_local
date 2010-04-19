@@ -7,7 +7,7 @@ require "guest"
 require "room_request"
 
 DataMapper::Logger.new($stdout, :debug)
-DataMapper.setup(:default, 'postgres://localhost/stay_with_a_local')
+DataMapper.setup(:default, ENV['DATABASE_URL'] || 'postgres://localhost/stay_with_a_local')
 # DataMapper.setup(:default, 'mysql://localhost/stay_with_a_local')
 DataMapper.auto_migrate!
 
