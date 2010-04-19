@@ -1,5 +1,8 @@
 # Load before Sinatra
 require 'rubygems'
+require 'bundler'
+Bundler.setup
+  
 require 'compass' # must be loaded before sinatra
 
 # Load Sinatra
