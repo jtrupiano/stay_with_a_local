@@ -9,7 +9,6 @@ require 'lib/render_partial'
 # Load after Sinatra -- Move to geminstaller / bundler
 require 'haml' # must be loaded after sinatra
 require 'ninesixty'
-require 'ruby-debug'
 
 # Configure Compass
 configure do
