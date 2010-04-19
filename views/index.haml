@@ -31,6 +31,8 @@
       %img{:id => "host_#{host.id}", :src => host.image_path }
       
 :javascript
+  // TODO: Don't show twitter name if one isn't provided
+  // TODO: Grey out host if they're no longer available
   function showHost(host, map) {
     // remove any existing markers
     $.each(hosts, function(i,host) {
