@@ -53,8 +53,8 @@ end
 
 post '/hosts/:id/room_requests' do
   host = Host.get(params[:id])
-  if @host.available_rooms.zero?
-    flash[:error] = "#{@host.name} no longer has any rooms available."
+  if host.available_rooms.zero?
+    flash[:error] = "#{host.name} no longer has any rooms available."
     redirect "/"
     return
   end
