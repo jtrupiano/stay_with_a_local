@@ -9,7 +9,6 @@ require 'compass' # must be loaded before sinatra
 require 'sinatra'
 require 'lib/render_partial'
 
-# Load after Sinatra -- Move to geminstaller / bundler
 require 'haml' # must be loaded after sinatra
 require 'ninesixty'
 
@@ -17,7 +16,7 @@ configure do
   Compass.configuration.parse(File.join(Sinatra::Application.root, 'config.rb'))
   enable :sessions
   require 'rack/flash'
-  use Rack::Flash, :sweep => true
+  use Rack::Flash, :sweep => false
 end
 
 # Load models
@@ -26,6 +25,8 @@ require File.join(File.dirname(__FILE__), 'db/setup')
 require File.join(File.dirname(__FILE__), 'db/seeds')
 
 require 'mailer'
+require 'twitter_auth'
+include TwitterAuth
 
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
@@ -35,19 +36,27 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
+  login_from_twitter
+  @has_access = has_access?
   haml :index, :layout => :'/layouts/page'
 end
 
+get '/twitter' do
+  save_token_and_redirect_to_twitter
+end
+
 get '/hosts/:id/room_requests/new' do
+  if !has_access?
+    flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
+    redirect "/"
+    return
+  end
   @host = Host.get(params[:id])
   if @host.available_rooms.zero?
     flash[:error] = "#{@host.name} no longer has any rooms available."
     redirect "/"
     return
   end
-  # TODO: Do "Sign in with Twitter" to really get this
-  screen_name_from_twitter = "dhh"
-  session[:guest_id] = Guest.first(:twitter => screen_name_from_twitter).id
   haml :'room_requests/new', :layout => :'/layouts/page'
 end
 

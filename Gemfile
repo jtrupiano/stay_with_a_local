@@ -9,3 +9,11 @@ gem 'datamapper', '= 0.10.2'
 gem 'do_postgres', '= 0.10.1'
 gem 'mail', '= 2.2.0'
 gem 'rack-flash', '= 0.1.1'
+gem 'oauth', '= 0.3.6'
+gem 'twitter_oauth', '= 0.3.3'
+
+group :development do
+  gem 'do_mysql', '= 0.10.1'
+  gem 'tlsmail', '= 0.0.1'
+  gem 'ruby-debug'
+end
