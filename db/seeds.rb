@@ -17,3 +17,5 @@ end
 
 rr = RoomRequest.create(:host => Host.first, :guest => Guest.first)
 rr.accept
+
+RoomRequest.create(:host => Host.last, :guest => Guest.last).accept

@@ -28,9 +28,11 @@
   %p Click the photos below to see where our homes are in relation to the convention center.
   #hosts
     - Host.all(:order => "name").each do |host|
-      %img{:id => "host_#{host.id}", :src => host.image_path }
+      %img{:id => "host_#{host.id}", :src => host.image_path, :class => "#{host.available_rooms.zero? ? 'booked' : ''}" }
       
 :javascript
+  // TODO: Don't show twitter name if one isn't provided
+  // TODO: Grey out host if they're no longer available
   function showHost(host, map) {
     // remove any existing markers
     $.each(hosts, function(i,host) {
@@ -72,6 +74,13 @@
       $('#staying_with').text('');
       $('#guests').html('');
     }
+    if (host.available_rooms == 0) {
+      $('#selected_host img').addClass("booked");
+      $('#selected_host #stay').hide();
+    } else {
+      $('#selected_host img').removeClass("booked");
+      $('#selected_host #stay').show();
+    }
     $('#selected_host').fadeIn('slow');
   }
 
@@ -101,5 +110,16 @@
       showHost(host, map);
     });
 
-    $('#selected_host').hide();
+    // Preselect a host (that has rooms available)
+    var hosts_with_rooms = [];
+    $.each(hosts, function(index, host) {
+      if (host.available_rooms > 0) {
+        hosts_with_rooms[hosts_with_rooms.length] = host;
+      }
+    });
+    if (hosts_with_rooms.length > 0) {
+      showHost(hosts_with_rooms[Math.floor(Math.random()*hosts_with_rooms.length)], map);
+    } else {
+      $('#selected_host').hide();
+    }
   });
