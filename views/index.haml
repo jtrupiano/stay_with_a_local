@@ -2,6 +2,10 @@
   var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
 .grid_8.alpha
+  - if flash[:notice]
+    #notice= flash[:notice]
+  - if flash[:error]
+    #error= flash[:error]
   #map_canvas{:style => 'height:400px;width:600px;margin-bottom:15px'}
 .grid_4.omega#selected_host
   .container_4
