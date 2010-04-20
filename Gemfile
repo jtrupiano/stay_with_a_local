@@ -10,6 +10,7 @@ gem 'do_postgres', '= 0.10.1'
 gem 'mail', '= 2.2.0'
 gem 'rack-flash', '= 0.1.1'
 gem 'oauth', '= 0.3.6'
+gem 'twitter_oauth', '= 0.3.3'
 
 # dev
 gem 'do_mysql', '= 0.10.1'

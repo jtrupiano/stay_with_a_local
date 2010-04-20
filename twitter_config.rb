@@ -7,4 +7,4 @@ TWITTER_URL               = 'http://twitter.com'
 TWITTER_CALLBACK_URL      = 'http://localhost:4567'
 #TWITTER_CALLBACK_URL      = 'http://stay-with-a-local.slslabs.com'
 
-require 'oauth'
+require 'twitter_oauth'
