@@ -31,8 +31,6 @@
       %img{:id => "host_#{host.id}", :src => host.image_path, :class => "#{host.available_rooms.zero? ? 'booked' : ''}" }
       
 :javascript
-  // TODO: Don't show twitter name if one isn't provided
-  // TODO: Grey out host if they're no longer available
   function showHost(host, map) {
     // remove any existing markers
     $.each(hosts, function(i,host) {
@@ -59,8 +57,13 @@
       rooms_str += "s";
     }
     $('#selected_host #rooms_available').html(rooms_str);
-    $('#selected_host #twitter').html("@" + host.twitter);
-    $('#selected_host #twitter').attr('href', 'http://twitter.com/' + host.twitter);
+    if (host.twitter) {
+      $('#selected_host #twitter').html("@" + host.twitter);
+      $('#selected_host #twitter').attr('href', 'http://twitter.com/' + host.twitter);
+      $('#selected_host #twitter').show();
+    } else {
+      $('#selected_host #twitter').hide();
+    }
     $('#selected_host #stay').html("Stay with " + host.first_name);
     $('#selected_host #stay').attr('href', "/hosts/" + host.id + '/room_requests/new');
     if (host.guests.length > 0) {
