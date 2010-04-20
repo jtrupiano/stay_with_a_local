@@ -9,8 +9,8 @@ require "room_request"
 
 configure :development, :test do
   DataMapper::Logger.new($stdout, :debug)
-  DataMapper.setup(:default, 'postgres://localhost/stay_with_a_local')
-  # DataMapper.setup(:default, 'mysql://localhost/stay_with_a_local')
+  # DataMapper.setup(:default, 'postgres://localhost/stay_with_a_local')
+  DataMapper.setup(:default, 'mysql://localhost/stay_with_a_local')
 end
 
 configure :production do

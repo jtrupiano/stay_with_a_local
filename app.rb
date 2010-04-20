@@ -26,6 +26,41 @@ require File.join(File.dirname(__FILE__), 'db/setup')
 require File.join(File.dirname(__FILE__), 'db/seeds')
 
 require 'mailer'
+require 'twitter_config'
+
+def login_from_twitter
+  get_access_token_from_session if !session[:access_token]  
+  if session[:access_token]
+    require 'ruby-debug'
+    debugger
+  end
+end
+
+def get_access_token_from_session
+  consumer = OAuth::Consumer.new(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, :site => TWITTER_URL)
+  request_token = OAuth::RequestToken.new(consumer, session[:twitter_request_token], session[:twitter_request_secret])
+  access_token = request_token.get_access_token
+  session[:access_token] = access_token
+rescue OAuth::Unauthorized
+  require 'ruby-debug'
+  debugger
+  session.delete(:access_token)
+ensure
+  session.delete(:twitter_request_token)
+  session.delete(:twitter_request_secret)
+end
+
+def save_token_and_redirect_to_twitter
+  consumer = OAuth::Consumer.new(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, :site => TWITTER_URL)
+  request_token = consumer.get_request_token(:oauth_callback => TWITTER_CALLBACK_URL)
+  session[:twitter_request_token] = request_token.token
+  session[:twitter_request_secret] = request_token.secret
+  redirect request_token.authorize_url
+end
+
+def has_access?
+  
+end
 
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
@@ -35,7 +70,12 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
+  login_from_twitter
   haml :index, :layout => :'/layouts/page'
+end
+
+get '/twitter' do
+  save_token_and_redirect_to_twitter
 end
 
 get '/hosts/:id/room_requests/new' do
