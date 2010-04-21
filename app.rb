@@ -21,8 +21,13 @@ end
 
 # Load models
 require File.join(File.dirname(__FILE__), 'db/setup')
-# TODO: WARNING: This will always rebuild the whole database
-require File.join(File.dirname(__FILE__), 'db/seeds')
+configure :development, :test, :cucumber
+  DataMapper.auto_migrate!
+end
+
+cucumber :development
+  require File.join(File.dirname(__FILE__), 'db/seeds')
+end
 
 require 'mailer'
 require 'twitter_auth'

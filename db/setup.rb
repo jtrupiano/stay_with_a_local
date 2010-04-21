@@ -16,5 +16,3 @@ end
 configure :production do
   load 'db/config.rb'
 end
-
-DataMapper.auto_migrate!
