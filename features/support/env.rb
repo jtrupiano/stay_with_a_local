@@ -5,6 +5,18 @@ require File.join(File.dirname(__FILE__), '..', '..', 'app')
 configure :cucumber do
   require 'features/support/fake_twitter'
   use FakeTwitter
+
+  require 'tlsmail'
+  Mail.defaults do
+    delivery_method :test
+  end
+  
+  # Monkeypatch mail to include modules it's already included!
+  # Only a problem in cucumber.
+  # TODO: follow up with @raasdnil and figure out what's up
+  Mail::FromField.send(:include, Mail::CommonAddress)
+  Mail::ToField.send(:include, Mail::CommonAddress)
+  Mail::SubjectField.send(:include, Mail::CommonField)
 end
 
 # # Force the application name because polyglot breaks the auto-detection logic.

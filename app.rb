@@ -28,6 +28,7 @@ end
 # Load models
 require File.join(File.dirname(__FILE__), 'db/setup')
 configure :development, :cucumber do
+  require 'ruby-debug'
   DataMapper.auto_migrate!
 end
 
@@ -47,7 +48,6 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
-  # require 'ruby-debug'
   # debugger
   login_from_twitter
   @has_access = has_access?
