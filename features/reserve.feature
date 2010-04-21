@@ -12,14 +12,14 @@ Feature: Reserve a room
     And I view the rooms available
     Then I should be able to reserve a room
     
-    When I click "Stay with Dave"
-    Then I should see a form to "Stay with Dave"
+    When I choose to "Stay with Dave"
+    Then I should see "Request a Room with Dave"
     
-    When I fill in the following fields
+    When I fill in the following:
       | Expected Arrival Date/Time | Sunday, 7PM |
       | Email                      | arailsconfspeaker@localhost |
       | Notes                      | I'm only staying through Wednesday |
-    And I click "Request Reservation"
+    And I press "Request Reservation"
     Then I should see "Thanks for requesting to stay with Dave"
     And "Dave" should receive a request email
     

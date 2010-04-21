@@ -12,6 +12,12 @@ require 'lib/render_partial'
 require 'haml' # must be loaded after sinatra
 require 'ninesixty'
 
+# Set Sinatra's variables (cucumber needs them)
+set :app_file, __FILE__
+set :root, File.dirname(__FILE__)
+set :views, 'views'
+set :public, 'public'
+
 configure do
   Compass.configuration.parse(File.join(Sinatra::Application.root, 'config.rb'))
   enable :sessions
@@ -21,11 +27,11 @@ end
 
 # Load models
 require File.join(File.dirname(__FILE__), 'db/setup')
-configure :development, :test, :cucumber
+configure :development, :test, :cucumber do
   DataMapper.auto_migrate!
 end
 
-cucumber :development
+configure :development do
   require File.join(File.dirname(__FILE__), 'db/seeds')
 end
 
