@@ -17,3 +17,9 @@ group :development do
   gem 'tlsmail', '= 0.0.1'
   gem 'ruby-debug'
 end
+
+group :cucumber do
+  gem 'rack-test', '= 0.5.3'
+  gem 'cucumber', '= 0.6.3'
+  gem 'webrat', '= 0.7.0'
+end

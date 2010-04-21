@@ -1,16 +1,23 @@
 require 'rubygems'
-require 'bundler'
-Bundler.setup
+# require 'bundler'
+# Bundler.setup
 
 # Load before Sinatra
 require 'compass' # must be loaded before sinatra
 
 # Load Sinatra
 require 'sinatra'
+# TODO: Google analytics
 require 'lib/render_partial'
 
 require 'haml' # must be loaded after sinatra
 require 'ninesixty'
+
+# Set Sinatra's variables (cucumber needs them)
+set :app_file, __FILE__
+set :root, File.dirname(__FILE__)
+set :views, 'views'
+set :public, 'public'
 
 configure do
   Compass.configuration.parse(File.join(Sinatra::Application.root, 'config.rb'))
@@ -21,11 +28,12 @@ end
 
 # Load models
 require File.join(File.dirname(__FILE__), 'db/setup')
-configure :development, :test, :cucumber
+configure :development, :cucumber do
+  require 'ruby-debug'
   DataMapper.auto_migrate!
 end
 
-configure :development, :cucumber
+configure :development do
   require File.join(File.dirname(__FILE__), 'db/seeds')
 end
 
@@ -40,6 +48,7 @@ get '/stylesheets/:name.css' do
   sass(:"stylesheets/#{params[:name]}", Compass.sass_engine_options)
 end
 
+# TODO: ensure that users cannot submit more than one request (or add support for more than one in the database/validations)
 get '/' do
   login_from_twitter
   @has_access = has_access?
@@ -50,6 +59,13 @@ get '/twitter' do
   save_token_and_redirect_to_twitter
 end
 
+# TODO: provide a log out link in the UI
+post '/logout' do
+  session.delete(:guest_id)
+  redirect "/"
+end
+
+# TODO: refactor out checks for has_access for all of these actions
 get '/hosts/:id/room_requests/new' do
   if !has_access?
     flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
@@ -73,7 +89,7 @@ post '/hosts/:id/room_requests' do
     return
   end
   guest = Guest.get(session[:guest_id])
-  room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments]
+  room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments], :email => params[:email]
   Mailer.send_request_email(room_request)
   flash[:notice] = "You have submitted a room request to #{host.name}.  You will receive email confirmation when the request has been accepted or declined."
   redirect "/"
@@ -85,7 +101,7 @@ get '/room_requests/:id/accept/:token' do
     return "Unable to find this request"
   end
   room_request.accept
-  # TODO: send email
+  Mailer.send_confirmation_email(room_request)
   flash[:notice] = "You have accepted a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   redirect "/"
 end
@@ -96,7 +112,7 @@ get '/room_requests/:id/decline/:token' do
     return "Unable to find this request"
   end
   room_request.decline
-  # TODO: send email
+  Mailer.send_declination_email(room_request)
   flash[:notice] = "You have declined a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   redirect "/"
 end

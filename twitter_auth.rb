@@ -19,6 +19,7 @@ module TwitterAuth
   end
 
   def login_from_twitter
+    return if has_access? && !returning_from_twitter?
     twitter_client.authorize(
       session[:request_token],
       session[:request_token_secret],
