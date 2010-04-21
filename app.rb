@@ -7,6 +7,7 @@ require 'compass' # must be loaded before sinatra
 
 # Load Sinatra
 require 'sinatra'
+# TODO: Google analytics
 require 'lib/render_partial'
 
 require 'haml' # must be loaded after sinatra
@@ -48,7 +49,6 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
-  # debugger
   login_from_twitter
   @has_access = has_access?
   haml :index, :layout => :'/layouts/page'
