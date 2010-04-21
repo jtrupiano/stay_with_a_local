@@ -25,7 +25,7 @@ configure :development, :test, :cucumber
   DataMapper.auto_migrate!
 end
 
-cucumber :development
+configure :development, :cucumber
   require File.join(File.dirname(__FILE__), 'db/seeds')
 end
 
