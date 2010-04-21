@@ -20,3 +20,17 @@ When /^I choose to "Stay with Dave"$/ do
   host = Host.first(:name => 'Dave Troy')
   get "/hosts/#{host.id}/room_requests/new"
 end
+
+When /^"([^\"]*)" approves the reservation request$/ do |host_name|
+  host = Host.first(:name => host_name)
+  room_request = host.room_requests.last
+  get "/room_requests/#{room_request.id}/accept/#{room_request.token}"
+  follow_redirect!
+end
+
+When /^"([^\"]*)" declines the reservation request$/ do |host_name|
+  host = Host.first(:name => host_name)
+  room_request = host.room_requests.last
+  get "/room_requests/#{room_request.id}/decline/#{room_request.token}"
+  follow_redirect!
+end

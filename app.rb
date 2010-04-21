@@ -32,7 +32,7 @@ configure :development, :cucumber do
   DataMapper.auto_migrate!
 end
 
-configure :development, :cucumber do
+configure :development do
   require File.join(File.dirname(__FILE__), 'db/seeds')
 end
 
@@ -56,6 +56,11 @@ end
 
 get '/twitter' do
   save_token_and_redirect_to_twitter
+end
+
+post '/logout' do
+  session.delete(:guest_id)
+  redirect "/"
 end
 
 get '/hosts/:id/room_requests/new' do
@@ -93,7 +98,7 @@ get '/room_requests/:id/accept/:token' do
     return "Unable to find this request"
   end
   room_request.accept
-  # TODO: send email
+  Mailer.send_confirmation_email(room_request)
   flash[:notice] = "You have accepted a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   redirect "/"
 end
@@ -104,7 +109,7 @@ get '/room_requests/:id/decline/:token' do
     return "Unable to find this request"
   end
   room_request.decline
-  # TODO: send email
+  Mailer.send_declination_email(room_request)
   flash[:notice] = "You have declined a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   redirect "/"
 end

@@ -4,8 +4,9 @@ Feature: Reserve a room
   should be able to reserve a room with a local
   
   Scenario: A RailsConf speaker reserves a room
-    Given I am not authenticated
-    When I view the rooms available
+    Given a host "Dave Troy" with 3 available rooms
+    When I am not authenticated
+    And I view the rooms available
     Then I should not be able to reserve a room
     
     When I authenticate with twitter as "jamesgolick"
@@ -23,16 +24,15 @@ Feature: Reserve a room
     And "Dave Troy" should receive a request email
     
     When "Dave Troy" approves the reservation request
-    Then "jamesgolick" should receive a confirmation email
+    Then I should see "You have accepted a room request"
+    And "jamesgolick" should receive a confirmation email
     
-    When I view the rooms available for "Dave"
-    Then I should see "has 2 available rooms"
-    And "jamesgolick" should be listed as staying with "Dave"
+    And "Dave Troy" should have 2 available rooms
+    And "jamesgolick" should be staying with "Dave Troy"
     
   Scenario: A host rejects a reservation request
-    Given "jamesgolick" has submitted a reservation request
-    When "Dave" rejects the reservation request
-    Then "jamesgolick" should receive a rejection email
-    
-    When I view the rooms available for "Dave"
-    Then I should see "has 3 available rooms"
+    Given a host "Paul Barry" with 1 available room
+    And "jamesgolick" has submitted a room request to "Paul Barry"
+    When "Paul Barry" declines the reservation request
+    Then "jamesgolick" should receive a declination email
+    And "Paul Barry" should have 1 available room

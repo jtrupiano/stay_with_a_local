@@ -31,6 +31,16 @@ Webrat.configure do |config|
   config.mode = :rack
 end
 
+# would think that Rack::MockResponse would already define this.
+# Required for rack-test's follow_redirect!
+module Rack
+  class MockResponse
+    def redirect?
+      @status >= 300 && @status < 400
+    end
+  end
+end
+
 World do
   def app
     @app = Rack::Builder.new do
@@ -42,4 +52,14 @@ World do
   include Rack::Test::Methods
   include Webrat::Methods
   include Webrat::Matchers
+end
+
+Before do
+  Guest.all.destroy!
+  Host.all.destroy!
+  RoomRequest.all.destroy!
+end
+
+After do
+  Mail::TestMailer.deliveries.clear
 end
