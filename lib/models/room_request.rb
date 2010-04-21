@@ -2,6 +2,7 @@ class RoomRequest
   include DataMapper::Resource
   
   property :id, Serial
+  property :email, Text
   property :comments, Text
   property :accepted_at, DateTime
   property :declined_at, DateTime

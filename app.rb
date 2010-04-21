@@ -79,7 +79,7 @@ post '/hosts/:id/room_requests' do
     return
   end
   guest = Guest.get(session[:guest_id])
-  room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments]
+  room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments], :email => params[:email]
   Mailer.send_request_email(room_request)
   flash[:notice] = "You have submitted a room request to #{host.name}.  You will receive email confirmation when the request has been accepted or declined."
   redirect "/"
