@@ -1,8 +1,7 @@
 Given /^I am not authenticated$/ do
-  # nothing
+  @guest = nil
 end
 
 When /^I authenticate with twitter as "([^\"]*)"$/ do |twitter_name|
-  guest = Guest.create!(:twitter => twitter_name, :name => twitter_name)
-  session[:guest_id] = guest.id
+  @guest = Guest.create!(:twitter => twitter_name, :name => twitter_name)
 end

@@ -16,14 +16,13 @@ Feature: Reserve a room
     Then I should see "Request a Room with Dave"
     
     When I fill in the following:
-      | Expected Arrival Date/Time | Sunday, 7PM |
-      | Email                      | arailsconfspeaker@localhost |
-      | Notes                      | I'm only staying through Wednesday |
-    And I press "Request Reservation"
-    Then I should see "Thanks for requesting to stay with Dave"
-    And "Dave" should receive a request email
+      | Email     | arailsconfspeaker@localhost |
+      | Comments  | I'm only staying through Wednesday |
+    And I press "Stay with Dave"
+    Then I should see "You have submitted a room request to Dave Troy"
+    And "Dave Troy" should receive a request email
     
-    When "Dave" approves the reservation request
+    When "Dave Troy" approves the reservation request
     Then "jamesgolick" should receive a confirmation email
     
     When I view the rooms available for "Dave"

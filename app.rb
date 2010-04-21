@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'bundler'
-Bundler.setup
+# require 'bundler'
+# Bundler.setup
 
 # Load before Sinatra
 require 'compass' # must be loaded before sinatra
@@ -27,11 +27,11 @@ end
 
 # Load models
 require File.join(File.dirname(__FILE__), 'db/setup')
-configure :development, :test, :cucumber do
+configure :development, :cucumber do
   DataMapper.auto_migrate!
 end
 
-configure :development do
+configure :development, :cucumber do
   require File.join(File.dirname(__FILE__), 'db/seeds')
 end
 
@@ -47,6 +47,8 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
+  # require 'ruby-debug'
+  # debugger
   login_from_twitter
   @has_access = has_access?
   haml :index, :layout => :'/layouts/page'

@@ -1,5 +1,11 @@
+ENV['RACK_ENV'] ||= 'cucumber'
 #$:.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 require File.join(File.dirname(__FILE__), '..', '..', 'app')
+
+configure :cucumber do
+  require 'features/support/cucumber_session'
+  use CucumberSession
+end
 
 # # Force the application name because polyglot breaks the auto-detection logic.
 # Sinatra::Application.app_file = app_file

@@ -1,5 +1,5 @@
 When /^I view the rooms available$/ do
-  get '/'
+  get '/', {}, get_env
 end
 
 Then /^I should not be able to reserve a room$/ do
@@ -18,7 +18,7 @@ end
 
 When /^I choose to "Stay with Dave"$/ do
   host = Host.first(:name => 'Dave Troy')
-  get "/hosts/#{host.id}/room_requests/new"
+  get "/hosts/#{host.id}/room_requests/new", {}, get_env
 end
 
 Then /^"([^\"]*)" should receive a request email$/ do |arg1|
