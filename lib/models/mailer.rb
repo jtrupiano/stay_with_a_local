@@ -1,6 +1,7 @@
 require 'mail'
 require 'haml'
 
+# TODO: remove hardcoded refs to localhost:4567
 class Mailer
   def self.haml(template, locals={})
     engine = Haml::Engine.new(File.read(File.join(Sinatra::Application.views, "#{template}.haml")))

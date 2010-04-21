@@ -7,6 +7,7 @@ require 'compass' # must be loaded before sinatra
 
 # Load Sinatra
 require 'sinatra'
+# TODO: Google analytics
 require 'lib/render_partial'
 
 require 'haml' # must be loaded after sinatra
@@ -47,8 +48,8 @@ get '/stylesheets/:name.css' do
   sass(:"stylesheets/#{params[:name]}", Compass.sass_engine_options)
 end
 
+# TODO: ensure that users cannot submit more than one request (or add support for more than one in the database/validations)
 get '/' do
-  # debugger
   login_from_twitter
   @has_access = has_access?
   haml :index, :layout => :'/layouts/page'
@@ -58,11 +59,13 @@ get '/twitter' do
   save_token_and_redirect_to_twitter
 end
 
+# TODO: provide a log out link in the UI
 post '/logout' do
   session.delete(:guest_id)
   redirect "/"
 end
 
+# TODO: refactor out checks for has_access for all of these actions
 get '/hosts/:id/room_requests/new' do
   if !has_access?
     flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
