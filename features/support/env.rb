@@ -3,8 +3,8 @@ ENV['RACK_ENV'] ||= 'cucumber'
 require File.join(File.dirname(__FILE__), '..', '..', 'app')
 
 configure :cucumber do
-  require 'features/support/cucumber_session'
-  use CucumberSession
+  require 'features/support/fake_twitter'
+  use FakeTwitter
 end
 
 # # Force the application name because polyglot breaks the auto-detection logic.
@@ -19,17 +19,15 @@ Webrat.configure do |config|
   config.mode = :rack
 end
 
-class MyWorld
+World do
+  def app
+    @app = Rack::Builder.new do
+      run Sinatra::Application
+    end
+  end
+
   include Test::Unit::Assertions
   include Rack::Test::Methods
   include Webrat::Methods
   include Webrat::Matchers
-
-  Webrat::Methods.delegate_to_session :response_code, :response_body
-
-  def app
-    Sinatra::Application
-  end
 end
-
-World{MyWorld.new}
