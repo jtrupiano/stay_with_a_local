@@ -7,7 +7,7 @@
 .grid_4.omega#selected_host
   .container_4
     .grid_2.alpha
-      %img
+      %img#photo
     .grid_2.omega
       %h3
       %p#rooms_available
@@ -25,6 +25,9 @@
         %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list of RailsConf speakers
         and logged into your twitter account.  If you are speaking and do not see your name on this list, please tweet 
         %a{:href => 'http://twitter.com/bmoreonrails'}@bmoreonrails.
+      %p
+        %a{:href => '/twitter'}
+          %img{:src => '/images/sign-in-with-twitter-darker.png', :alt => 'Sign in with Twitter'}
 
 .grid_12.alpha.omega
   %p Click the photos below to see where our homes are in relation to the convention center.
@@ -57,8 +60,8 @@
     }
     $('#selected_host').hide();
     $('#selected_host h3').html(host.name);
-    $('#selected_host img').attr("src", host.image_path);
-    $('#selected_host img').attr("alt", host.name);
+    $('#selected_host #photo').attr("src", host.image_path);
+    $('#selected_host #photo').attr("alt", host.name);
     $('#selected_host #description').html(host.description);
     var rooms_str = "has " + host.available_rooms + " available room";
     if (host.available_rooms != 1) {
@@ -86,10 +89,10 @@
       $('#guests').html('');
     }
     if (host.available_rooms == 0) {
-      $('#selected_host img').addClass("booked");
+      $('#selected_host #photo').addClass("booked");
       $('#selected_host #stay').hide();
     } else {
-      $('#selected_host img').removeClass("booked");
+      $('#selected_host #photo').removeClass("booked");
       $('#selected_host #stay').show();
     }
     
