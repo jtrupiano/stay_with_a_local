@@ -21,14 +21,30 @@ When /^I choose to "Stay with Dave"$/ do
   get "/hosts/#{host.id}/room_requests/new"
 end
 
-When /^"([^\"]*)" approves the reservation request$/ do |host_name|
+When /^"([^\"]*)" accepts the room request from "([^\"]*)"$/ do |host_name, guest_twitter|
+  host = Host.first(:name => host_name)
+  guest = Guest.first(:twitter => guest_twitter)
+  room_request = RoomRequest.first(:host => host, :guest => guest)
+  get "/room_requests/#{room_request.id}/accept/#{room_request.token}"
+  follow_redirect!
+end
+
+When /^"([^\"]*)" accepts the room request$/ do |host_name|
   host = Host.first(:name => host_name)
   room_request = host.room_requests.last
   get "/room_requests/#{room_request.id}/accept/#{room_request.token}"
   follow_redirect!
 end
 
-When /^"([^\"]*)" declines the reservation request$/ do |host_name|
+When /^"([^\"]*)" declines the room request from "([^\"]*)"$/ do |host_name, guest_twitter|
+  host = Host.first(:name => host_name)
+  guest = Guest.first(:name => guest_twitter)
+  room_request = RoomRequest.first(:host => host, :guest => guest)
+  get "/room_requests/#{room_request.id}/decline/#{room_request.token}"
+  follow_redirect!
+end
+
+When /^"([^\"]*)" declines the room request$/ do |host_name|
   host = Host.first(:name => host_name)
   room_request = host.room_requests.last
   get "/room_requests/#{room_request.id}/decline/#{room_request.token}"

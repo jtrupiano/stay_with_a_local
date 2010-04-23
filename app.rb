@@ -90,29 +90,34 @@ post '/hosts/:id/room_requests' do
   end
   guest = Guest.get(session[:guest_id])
   room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments], :email => params[:email]
-  Mailer.send_request_email(room_request)
   flash[:notice] = "You have submitted a room request to #{host.name}.  You will receive email confirmation when the request has been accepted or declined."
   redirect "/"
 end
 
 get '/room_requests/:id/accept/:token' do
   room_request = RoomRequest.get(params[:id])
-  if room_request.token != params[:token]
-    return "Unable to find this request"
+  if room_request.host.available_rooms < 1
+    flash[:error] = "You have already approved room requests for all of your rooms"
+  elsif !room_request.pending?
+    flash[:error] = "You have already processed the room request from #{room_request.guest.twitter}"
+  elsif room_request.token != params[:token]
+    flash[:error] = "Unable to find this request"
+  else
+    room_request.accept
+    flash[:notice] = "You have accepted a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   end
-  room_request.accept
-  Mailer.send_confirmation_email(room_request)
-  flash[:notice] = "You have accepted a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   redirect "/"
 end
 
 get '/room_requests/:id/decline/:token' do
   room_request = RoomRequest.get(params[:id])
-  if room_request.token != params[:token]
-    return "Unable to find this request"
+  if !room_request.pending?
+    flash[:error] = "You have already processed the room request from #{room_request.guest.twitter}"
+  elsif room_request.token != params[:token]
+    flash[:error] = "Unable to find this request"
+  else
+    room_request.decline
+    flash[:notice] = "You have declined a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   end
-  room_request.decline
-  Mailer.send_declination_email(room_request)
-  flash[:notice] = "You have declined a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
   redirect "/"
 end
