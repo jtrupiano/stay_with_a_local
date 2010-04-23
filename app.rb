@@ -27,18 +27,19 @@ configure do
 end
 
 # Load models
-require File.join(File.dirname(__FILE__), 'db/setup')
+require 'db/setup'
 configure :development, :cucumber do
   require 'ruby-debug'
   DataMapper.auto_migrate!
 end
 
+require 'mailer'
 configure :development do
-  require File.join(File.dirname(__FILE__), 'db/seeds')
+  require 'db/seeds'
+  require 'lib/mail_hijack'
 end
 
-require 'mailer'
-require 'twitter_auth'
+require 'lib/twitter_auth'
 include TwitterAuth
 
 # At a minimum the main sass file must reside within the views directory
