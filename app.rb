@@ -42,6 +42,35 @@ end
 require 'lib/twitter_auth'
 include TwitterAuth
 
+def booked?
+  @guest = Guest.get(session[:guest_id])
+  @guest && @guest.booked?
+end
+
+def can_reserve?
+  logged_in? && !booked?
+end
+
+def require_unbooked_guest
+  return true if logged_in? && !booked?
+  if !logged_in?
+    flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
+  elsif booked?
+    flash[:error] = "You've already booked a room!"
+  end
+  redirect "/"
+  halt
+end
+
+def require_unbooked_host
+  @host = Host.get(params[:id])
+  if @host.available_rooms < 1    
+    flash[:error] = "#{@host.name} no longer has any rooms available."
+    redirect "/"
+    halt
+  end
+end
+
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
 get '/stylesheets/:name.css' do
@@ -52,7 +81,8 @@ end
 # TODO: ensure that users cannot submit more than one request (or add support for more than one in the database/validations)
 get '/' do
   login_from_twitter
-  @has_access = has_access?
+  @can_reserve  = can_reserve?
+  @logged_in    = logged_in?
   haml :index, :layout => :'/layouts/page'
 end
 
@@ -66,32 +96,18 @@ post '/logout' do
   redirect "/"
 end
 
-# TODO: refactor out checks for has_access for all of these actions
+# TODO: refactor out checks for can_reserve? for all of these actions
 get '/hosts/:id/room_requests/new' do
-  if !has_access?
-    flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
-    redirect "/"
-    return
-  end
-  @host = Host.get(params[:id])
-  if @host.available_rooms.zero?
-    flash[:error] = "#{@host.name} no longer has any rooms available."
-    redirect "/"
-    return
-  end
+  require_unbooked_guest
+  require_unbooked_host
   haml :'room_requests/new', :layout => :'/layouts/page'
 end
 
 post '/hosts/:id/room_requests' do
-  host = Host.get(params[:id])
-  if host.available_rooms.zero?
-    flash[:error] = "#{host.name} no longer has any rooms available."
-    redirect "/"
-    return
-  end
-  guest = Guest.get(session[:guest_id])
-  room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments], :email => params[:email]
-  flash[:notice] = "You have submitted a room request to #{host.name}.  You will receive email confirmation when the request has been accepted or declined."
+  require_unbooked_guest
+  require_unbooked_host
+  room_request = RoomRequest.create :host => @host, :guest => @guest, :comments => params[:comments], :email => params[:email]
+  flash[:notice] = "You have submitted a room request to #{@host.name}.  You will receive email confirmation when the request has been accepted or declined."
   redirect "/"
 end
 

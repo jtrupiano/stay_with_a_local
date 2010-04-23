@@ -38,9 +38,8 @@
 :javascript
   var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
-  function is_logged_in() {
-    return #{@has_access ? 'true' : 'false'};
-  }
+  function can_reserve() { return #{@can_reserve ? 'true' : 'false'}; }
+  function logged_in() { return #{@logged_in ? 'true' : 'false'}; }
   
   function showHost(host, map) {
     // remove any existing markers
@@ -96,8 +95,11 @@
       $('#selected_host #stay').show();
     }
     
-    if (is_logged_in()) {
+    if (can_reserve()) {
       $('#selected_host #stay').show();
+      $('#selected_host #login').hide();
+    } else if (logged_in()) {
+      $('#selected_host #stay').hide();
       $('#selected_host #login').hide();
     } else {
       $('#selected_host #stay').hide();

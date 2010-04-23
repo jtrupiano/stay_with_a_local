@@ -6,4 +6,8 @@ class Guest
   property :twitter, String
   
   has 1, :room_request
+  
+  def booked?
+    room_request && room_request.accepted?
+  end
 end

@@ -19,7 +19,7 @@ module TwitterAuth
   end
 
   def login_from_twitter
-    return if has_access? && !returning_from_twitter?
+    return if logged_in? && !returning_from_twitter?
     twitter_client.authorize(
       session[:request_token],
       session[:request_token_secret],
@@ -59,7 +59,7 @@ module TwitterAuth
     list_members = twitter_client.list_members('bmoreonrails', 'railsconf-2010-speakers')['users'].map{|user_info| user_info['screen_name']}
   end
   
-  def has_access?
+  def logged_in?
     session[:guest_id]
   end
 end

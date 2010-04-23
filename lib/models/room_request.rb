@@ -31,6 +31,10 @@ class RoomRequest
     accepted_at.nil? && declined_at.nil?
   end
   
+  def accepted?
+    !accepted_at.nil?
+  end
+  
   def accept
     # TODO: How do you do transactions in DM?
     self.accepted_at = Time.now

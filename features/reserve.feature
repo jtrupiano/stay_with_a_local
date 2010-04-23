@@ -3,6 +3,7 @@ Feature: Reserve a room
   RailsConf speakers
   should be able to reserve a room with a local
   
+  @now
   Scenario: A RailsConf speaker reserves a room
     Given a host "Dave Troy" with 3 available rooms
     When I am not authenticated
@@ -13,7 +14,7 @@ Feature: Reserve a room
     And I view the rooms available
     Then I should be able to reserve a room
     
-    When I choose to "Stay with Dave"
+    When I choose to stay with "Dave Troy"
     Then I should see "Request a Room with Dave"
     
     When I fill in the following:
@@ -58,6 +59,16 @@ Feature: Reserve a room
     
     When "Paul Barry" declines the room request from "jamesgolick"
     Then I should see "You have already processed the room request from jamesgolick"
+    
+  Scenario: A guest that already has a room reserved tries to reserve another room
+    Given a host "Nick Evans" has already accepted a guest "tmm1"
+    And a host "Paul Barry" with 1 available room
+    When I authenticate with twitter as "tmm1"
+    And I view the rooms available
+    Then I should not be able to reserve a room
+    
+    When I try to stay with "Paul Barry"
+    Then I should see "You've already booked a room"
     
   # Scenario: A guest cannot submit two room requests
   #   Given a host "Paul Barry" with 1 available room
