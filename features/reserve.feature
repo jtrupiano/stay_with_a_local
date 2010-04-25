@@ -3,7 +3,6 @@ Feature: Reserve a room
   RailsConf speakers
   should be able to reserve a room with a local
   
-  @now
   Scenario: A RailsConf speaker reserves a room
     Given a host "Dave Troy" with 3 available rooms
     When I am not authenticated
@@ -69,9 +68,13 @@ Feature: Reserve a room
     
     When I try to stay with "Paul Barry"
     Then I should see "You've already booked a room"
+
+  @now
+  Scenario: A host accepts a room request for someone that is already accepted
+    Given "drnic" has submitted a room request to "Matt Scilipoti"
+    And "drnic" has submitted a room request to "David Robson"
+    When "David Robson" accepts the room request from "drnic"
+    Then "drnic" should receive a confirmation email
     
-  # Scenario: A guest cannot submit two room requests
-  #   Given a host "Paul Barry" with 1 available room
-  #   And "jamesgolick" has submitted a room request to 
-  #   
-  # Scenario: A host accepts a room request for someone that is already accepted
+    When "Matt Scilipoti" accepts the room request from "drnic"
+    Then I should see "drnic has already booked a room with David Robson"

@@ -52,11 +52,12 @@ def can_reserve?
 end
 
 def require_unbooked_guest
-  return true if logged_in? && !booked?
   if !logged_in?
     flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
   elsif booked?
     flash[:error] = "You've already booked a room!"
+  else
+    return true
   end
   redirect "/"
   halt
@@ -71,6 +72,23 @@ def require_unbooked_host
   end
 end
 
+def require_valid_room_request
+  @room_request = RoomRequest.get(params[:id])
+  if @room_request.guest.booked? && @room_request.guest.host != @room_request.host
+    flash[:error] = "#{@room_request.guest.twitter} has already booked a room with #{@room_request.guest.host.name}"
+  elsif @room_request.host.available_rooms < 1
+    flash[:error] = "You have already approved room requests for all of your rooms"
+  elsif !@room_request.pending?
+    flash[:error] = "You have already processed the room request from #{@room_request.guest.twitter}"
+  elsif @room_request.token != params[:token]
+    flash[:error] = "Unable to find this request"
+  else
+    return true
+  end
+  redirect "/"
+  halt
+end
+
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
 get '/stylesheets/:name.css' do
@@ -78,7 +96,6 @@ get '/stylesheets/:name.css' do
   sass(:"stylesheets/#{params[:name]}", Compass.sass_engine_options)
 end
 
-# TODO: ensure that users cannot submit more than one request (or add support for more than one in the database/validations)
 get '/' do
   login_from_twitter
   @can_reserve  = can_reserve?
@@ -96,7 +113,6 @@ post '/logout' do
   redirect "/"
 end
 
-# TODO: refactor out checks for can_reserve? for all of these actions
 get '/hosts/:id/room_requests/new' do
   require_unbooked_guest
   require_unbooked_host
@@ -112,29 +128,15 @@ post '/hosts/:id/room_requests' do
 end
 
 get '/room_requests/:id/accept/:token' do
-  room_request = RoomRequest.get(params[:id])
-  if room_request.host.available_rooms < 1
-    flash[:error] = "You have already approved room requests for all of your rooms"
-  elsif !room_request.pending?
-    flash[:error] = "You have already processed the room request from #{room_request.guest.twitter}"
-  elsif room_request.token != params[:token]
-    flash[:error] = "Unable to find this request"
-  else
-    room_request.accept
-    flash[:notice] = "You have accepted a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
-  end
+  require_valid_room_request
+  @room_request.accept
+  flash[:notice] = "You have accepted a room request from #{@room_request.guest.name}.  Rooms you have available: #{@room_request.host.available_rooms}"
   redirect "/"
 end
 
 get '/room_requests/:id/decline/:token' do
-  room_request = RoomRequest.get(params[:id])
-  if !room_request.pending?
-    flash[:error] = "You have already processed the room request from #{room_request.guest.twitter}"
-  elsif room_request.token != params[:token]
-    flash[:error] = "Unable to find this request"
-  else
-    room_request.decline
-    flash[:notice] = "You have declined a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
-  end
+  require_valid_room_request
+  @room_request.decline
+  flash[:notice] = "You have declined a room request from #{@room_request.guest.name}.  Rooms you have available: #{@room_request.host.available_rooms}"
   redirect "/"
 end

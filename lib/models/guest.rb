@@ -5,9 +5,14 @@ class Guest
   property :name, String
   property :twitter, String
   
-  has 1, :room_request
+  has n, :room_requests
   
   def booked?
-    room_request && room_request.accepted?
+    room_requests.any?(&:accepted?)
+  end
+  
+  def host
+    return nil if !booked?
+    room_requests.accepted.first.host
   end
 end

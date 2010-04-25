@@ -41,11 +41,18 @@ class RoomRequest
     host.available_rooms -= 1
     host.save
     save
+    guest.room_requests.pending.each do |room_request|
+      room_request.decline_without_callback
+    end
+  end
+  
+  def decline_without_callback
+    self.declined_at = Time.now
+    save
   end
   
   def decline
-    self.declined_at = Time.now
-    save
+    decline_without_callback
   end
 
   after :accept do
