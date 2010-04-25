@@ -42,15 +42,6 @@ end
 require 'lib/twitter_auth'
 include TwitterAuth
 
-def booked?
-  @guest = Guest.get(session[:guest_id])
-  @guest && @guest.booked?
-end
-
-def can_reserve?
-  logged_in? && !booked?
-end
-
 def require_unbooked_guest
   if !logged_in?
     flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
@@ -89,6 +80,17 @@ def require_valid_room_request
   halt
 end
 
+helpers do
+  def booked?
+    @guest = Guest.get(session[:guest_id])
+    @guest && @guest.booked?
+  end
+
+  def can_reserve?
+    logged_in? && !booked?
+  end
+end
+
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
 get '/stylesheets/:name.css' do
@@ -98,8 +100,6 @@ end
 
 get '/' do
   login_from_twitter
-  @can_reserve  = can_reserve?
-  @logged_in    = logged_in?
   haml :index, :layout => :'/layouts/page'
 end
 
@@ -107,8 +107,7 @@ get '/twitter' do
   save_token_and_redirect_to_twitter
 end
 
-# TODO: provide a log out link in the UI
-post '/logout' do
+get '/logout' do
   session.delete(:guest_id)
   redirect "/"
 end

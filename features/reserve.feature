@@ -12,6 +12,7 @@ Feature: Reserve a room
     When I authenticate with twitter as "jamesgolick"
     And I view the rooms available
     Then I should be able to reserve a room
+    And I should be able to sign out
     
     When I choose to stay with "Dave Troy"
     Then I should see "Request a Room with Dave"
@@ -29,6 +30,11 @@ Feature: Reserve a room
     
     And "Dave Troy" should have 2 available rooms
     And "jamesgolick" should be staying with "Dave Troy"
+    
+    When I authenticate with twitter as "jamesgolick"
+    When I view the rooms available
+    Then I should not be able to reserve a room
+    And I should see "You have already booked a room with Dave Troy"
     
   Scenario: A host declines a room request
     Given a host "Paul Barry" with 1 available room

@@ -9,8 +9,12 @@ Then /^I should not be able to reserve a room$/ do
 end
 
 Then /^I should be able to reserve a room$/ do
-  Then %{I should see /return true/}
-  And  %{I should not see /return false/}
+  Then %{I should not see /function can_reserve\\\(\\\) \\\{ return false/}
+  And  %{I should see /function can_reserve\\\(\\\) \\\{ return true/}
+end
+
+Then /^I should be able to sign out$/ do
+  Then %{I should see "Sign out"}
 end
 
 When /^I choose to stay with "([^\"]*)"$/ do |host_name|

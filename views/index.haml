@@ -19,16 +19,24 @@
       %p#description
       %h4#staying_with
       #guests
-    .grid_4.alpha.omega#login
-      %p 
-        In order to request a room, you must be on our 
-        %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list of RailsConf speakers
-        and logged into your twitter account.  If you are speaking and do not see your name on this list, please tweet 
-        %a{:href => 'http://twitter.com/bmoreonrails'}>@bmoreonrails
-        \.
-      %p
-        %a{:href => '/twitter'}
-          %img{:src => '/images/sign-in-with-twitter-darker.png', :alt => 'Sign in with Twitter'}
+    - if logged_in?
+      - if booked?
+        .grid_4.alpha.omega#booked
+          %p You have already booked a room with #{@guest.host.name}.
+      .grid_4.alpha.omega#logout
+        %p
+          %a{:href => '/logout'} Sign out
+    - else
+      .grid_4.alpha.omega#login
+        %p 
+          In order to request a room, you must be on our 
+          %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list of RailsConf speakers
+          and logged into your twitter account.  If you are speaking and do not see your name on this list, please tweet 
+          %a{:href => 'http://twitter.com/bmoreonrails'}>@bmoreonrails
+          \.
+        %p
+          %a{:href => '/twitter'}
+            %img{:src => '/images/sign-in-with-twitter-darker.png', :alt => 'Sign in with Twitter'}
 
 .grid_12.alpha.omega
   %p Click the photos below to see where our homes are in relation to the convention center.
@@ -39,8 +47,9 @@
 :javascript
   var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
-  function can_reserve() { return #{@can_reserve ? 'true' : 'false'}; }
-  function logged_in() { return #{@logged_in ? 'true' : 'false'}; }
+  function can_reserve() { return #{can_reserve? ? 'true' : 'false'}; }
+  function logged_in() { return #{logged_in? ? 'true' : 'false'}; }
+  function already_booked() { return #{logged_in? && !can_reserve? ? 'true' : 'false'}; }
   
   function showHost(host, map) {
     // remove any existing markers
