@@ -1,4 +1,2 @@
-Remove jtrupiano@gmail.com as hard-coded email address
 Integrate Bmore on Rails stylesheet
-Apply a hover/highlight for host photos
 Empty all TODO's from the code
