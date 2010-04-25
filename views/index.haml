@@ -97,13 +97,6 @@
       $('#staying_with').text('');
       $('#guests').html('');
     }
-    if (host.available_rooms == 0) {
-      $('#selected_host #photo').addClass("booked");
-      $('#selected_host #stay').hide();
-    } else {
-      $('#selected_host #photo').removeClass("booked");
-      $('#selected_host #stay').show();
-    }
     
     if (can_reserve()) {
       $('#selected_host #stay').show();
@@ -115,6 +108,15 @@
       $('#selected_host #stay').hide();
       $('#selected_host #login').show();
     }
+    
+    if (host.available_rooms == 0) {
+      $('#selected_host #photo').addClass("booked");
+      $('#selected_host #stay').hide();
+    } else {
+      $('#selected_host #photo').removeClass("booked");
+      $('#selected_host #stay').show();
+    }
+    
     $('#selected_host').fadeIn('slow');
   }
 
