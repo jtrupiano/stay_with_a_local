@@ -32,6 +32,13 @@ configure :development, :cucumber do
   DataMapper.auto_migrate!
 end
 
+configure :development, :cucumber do
+  set :host, "http://localhost:4567"
+end
+configure :production do
+  set :host, "http://stay-with-a-local.slslabs.com"
+end
+
 require 'mailer'
 configure :development do
   require 'db/seeds'
