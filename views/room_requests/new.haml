@@ -1,7 +1,11 @@
 .grid_8.alpha
-  %h1 Request A Room With #{@host.name}
+  %h1 Request a Room with #{@host.name}
   %p Enter any comments or questions that you may have for #{@host.first_name}.  You will receive an email after #{@host.first_name} has either confirmed or denied the room request.
   %form{ :method => "POST", :action => "/hosts/#{@host.id}/room_requests"}
+    %label{ :for => "email" } Email
+    %br
+    %input{ :type => 'text', :id => 'email', :name => 'email', :size => 50 }
+    %br
     %label{ :for => "comments" } Comments
     %br
     %textarea{ :id => "comments", :name => "comments", :rows => 15, :cols => 80 }

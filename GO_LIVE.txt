@@ -1,0 +1,2 @@
+Integrate Bmore on Rails stylesheet
+Empty all TODO's from the code

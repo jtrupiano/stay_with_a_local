@@ -4,36 +4,83 @@ Feature: Reserve a room
   should be able to reserve a room with a local
   
   Scenario: A RailsConf speaker reserves a room
-    Given I am not authenticated
-    When I view the rooms available
+    Given a host "Dave Troy" with 3 available rooms
+    When I am not authenticated
+    And I view the rooms available
     Then I should not be able to reserve a room
     
     When I authenticate with twitter as "jamesgolick"
     And I view the rooms available
     Then I should be able to reserve a room
+    And I should be able to sign out
     
-    When I click "Stay with Dave"
-    Then I should see a form to "Stay with Dave"
+    When I choose to stay with "Dave Troy"
+    Then I should see "Request a Room with Dave"
     
-    When I fill in the following fields
-      | Expected Arrival Date/Time | Sunday, 7PM |
-      | Email                      | arailsconfspeaker@localhost |
-      | Notes                      | I'm only staying through Wednesday |
-    And I click "Request Reservation"
-    Then I should see "Thanks for requesting to stay with Dave"
-    And "Dave" should receive a request email
+    When I fill in the following:
+      | Email     | arailsconfspeaker@localhost |
+      | Comments  | I'm only staying through Wednesday |
+    And I press "Stay with Dave"
+    Then I should see "You have submitted a room request to Dave Troy"
+    And "Dave Troy" should receive a request email
     
-    When "Dave" approves the reservation request
-    Then "jamesgolick" should receive a confirmation email
+    When "Dave Troy" accepts the room request
+    Then I should see "You have accepted a room request"
+    And "jamesgolick" should receive a confirmation email
     
-    When I view the rooms available for "Dave"
-    Then I should see "has 2 available rooms"
-    And "jamesgolick" should be listed as staying with "Dave"
+    And "Dave Troy" should have 2 available rooms
+    And "jamesgolick" should be staying with "Dave Troy"
     
-  Scenario: A host rejects a reservation request
-    Given "jamesgolick" has submitted a reservation request
-    When "Dave" rejects the reservation request
-    Then "jamesgolick" should receive a rejection email
+    When I authenticate with twitter as "jamesgolick"
+    When I view the rooms available
+    Then I should not be able to reserve a room
+    And I should see "You have already booked a room with Dave Troy"
     
-    When I view the rooms available for "Dave"
-    Then I should see "has 3 available rooms"
+  Scenario: A host declines a room request
+    Given a host "Paul Barry" with 1 available room
+    And "jamesgolick" has submitted a room request to "Paul Barry"
+    When "Paul Barry" declines the room request
+    Then "jamesgolick" should receive a declination email
+    And "Paul Barry" should have 1 available room
+
+  Scenario: A host with several available rooms accepts a few requests
+    Given a host "Paul Barry" with 2 available rooms
+    And "jamesgolick" has submitted a room request to "Paul Barry"
+    And "wycats" has submitted a room request to "Paul Barry"
+    And "joedamato" has submitted a room request to "Paul Barry"
+    And "flipsasser" has submitted a room request to "Paul Barry"
+    When "Paul Barry" accepts the room request from "wycats"
+    Then "wycats" should receive a confirmation email
+    
+    When "Paul Barry" accepts the room request from "joedamato"
+    Then "jamesgolick" should receive a declination email
+    And "flipsasser" should receive a declination email
+    
+    When "Paul Barry" accepts the room request from "flipsasser"
+    Then I should see "You have already processed the room request from flipsasser"
+    
+    When "Paul Barry" declines the room request from "wycats"
+    Then I should see "You have already processed the room request from wycats"
+    
+    When "Paul Barry" declines the room request from "jamesgolick"
+    Then I should see "You have already processed the room request from jamesgolick"
+    
+  Scenario: A guest that already has a room reserved tries to reserve another room
+    Given a host "Nick Evans" has already accepted a guest "tmm1"
+    And a host "Paul Barry" with 1 available room
+    When I authenticate with twitter as "tmm1"
+    And I view the rooms available
+    Then I should not be able to reserve a room
+    
+    When I try to stay with "Paul Barry"
+    Then I should see "You've already booked a room"
+
+  @now
+  Scenario: A host accepts a room request for someone that is already accepted
+    Given "drnic" has submitted a room request to "Matt Scilipoti"
+    And "drnic" has submitted a room request to "David Robson"
+    When "David Robson" accepts the room request from "drnic"
+    Then "drnic" should receive a confirmation email
+    
+    When "Matt Scilipoti" accepts the room request from "drnic"
+    Then I should see "drnic has already booked a room with David Robson"

@@ -1,1 +1,1 @@
-The [Bmore on Rails](http://bmoreonrails.org/) crew will be hosting speakers for [RailsConf 2010](http://railsconf.org).  This app (currently just an HTML mockup) will showcase the Baltimore Rubyists providing rooms for lodging and allow speakers to reserve a room.
+The [B'more on Rails](http://bmoreonrails.org/) crew will be hosting speakers for [RailsConf 2010](http://railsconf.org).  This is the source code for the app located at [http://stay-with-a-local.slslabs.com](http://stay-with-a-local.slslabs.com).

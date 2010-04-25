@@ -12,6 +12,12 @@ require 'lib/render_partial'
 require 'haml' # must be loaded after sinatra
 require 'ninesixty'
 
+# Set Sinatra's variables (cucumber needs them)
+set :app_file, __FILE__
+set :root, File.dirname(__FILE__)
+set :views, 'views'
+set :public, 'public'
+
 configure do
   Compass.configuration.parse(File.join(Sinatra::Application.root, 'config.rb'))
   enable :sessions
@@ -20,13 +26,76 @@ configure do
 end
 
 # Load models
-require File.join(File.dirname(__FILE__), 'db/setup')
-# TODO: WARNING: This will always rebuild the whole database
-require File.join(File.dirname(__FILE__), 'db/seeds')
+require 'db/setup'
+configure :development, :cucumber do
+  require 'ruby-debug'
+  DataMapper.auto_migrate!
+end
+
+configure :development, :cucumber do
+  set :host, "http://localhost:4567"
+end
+configure :production do
+  set :host, "http://stay-with-a-local.slslabs.com"
+end
 
 require 'mailer'
-require 'twitter_auth'
+configure :development do
+  require 'db/seeds'
+  require 'lib/mail_hijack'
+end
+
+require 'lib/twitter_auth'
 include TwitterAuth
+
+def require_unbooked_guest
+  if !logged_in?
+    flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
+  elsif booked?
+    flash[:error] = "You've already booked a room!"
+  else
+    return true
+  end
+  redirect "/"
+  halt
+end
+
+def require_unbooked_host
+  @host = Host.get(params[:id])
+  if @host.available_rooms < 1    
+    flash[:error] = "#{@host.name} no longer has any rooms available."
+    redirect "/"
+    halt
+  end
+end
+
+def require_valid_room_request
+  @room_request = RoomRequest.get(params[:id])
+  if @room_request.guest.booked? && @room_request.guest.host != @room_request.host
+    flash[:error] = "#{@room_request.guest.twitter} has already booked a room with #{@room_request.guest.host.name}"
+  elsif @room_request.host.available_rooms < 1
+    flash[:error] = "You have already approved room requests for all of your rooms"
+  elsif !@room_request.pending?
+    flash[:error] = "You have already processed the room request from #{@room_request.guest.twitter}"
+  elsif @room_request.token != params[:token]
+    flash[:error] = "Unable to find this request"
+  else
+    return true
+  end
+  redirect "/"
+  halt
+end
+
+helpers do
+  def booked?
+    @guest = Guest.get(session[:guest_id])
+    @guest && @guest.booked?
+  end
+
+  def can_reserve?
+    logged_in? && !booked?
+  end
+end
 
 # At a minimum the main sass file must reside within the views directory
 # We create /views/stylesheets where all our sass files can safely reside
@@ -37,7 +106,6 @@ end
 
 get '/' do
   login_from_twitter
-  @has_access = has_access?
   haml :index, :layout => :'/layouts/page'
 end
 
@@ -45,53 +113,35 @@ get '/twitter' do
   save_token_and_redirect_to_twitter
 end
 
+get '/logout' do
+  session.delete(:guest_id)
+  redirect "/"
+end
+
 get '/hosts/:id/room_requests/new' do
-  if !has_access?
-    flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
-    redirect "/"
-    return
-  end
-  @host = Host.get(params[:id])
-  if @host.available_rooms.zero?
-    flash[:error] = "#{@host.name} no longer has any rooms available."
-    redirect "/"
-    return
-  end
+  require_unbooked_guest
+  require_unbooked_host
   haml :'room_requests/new', :layout => :'/layouts/page'
 end
 
 post '/hosts/:id/room_requests' do
-  host = Host.get(params[:id])
-  if host.available_rooms.zero?
-    flash[:error] = "#{host.name} no longer has any rooms available."
-    redirect "/"
-    return
-  end
-  guest = Guest.get(session[:guest_id])
-  room_request = RoomRequest.create :host => host, :guest => guest, :comments => params[:comments]
-  Mailer.send_request_email(room_request)
-  flash[:notice] = "You have submitted a room request to #{host.name}.  You will receive email confirmation when the request has been accepted or declined."
+  require_unbooked_guest
+  require_unbooked_host
+  room_request = RoomRequest.create :host => @host, :guest => @guest, :comments => params[:comments], :email => params[:email]
+  flash[:notice] = "You have submitted a room request to #{@host.name}.  You will receive email confirmation when the request has been accepted or declined."
   redirect "/"
 end
 
 get '/room_requests/:id/accept/:token' do
-  room_request = RoomRequest.get(params[:id])
-  if room_request.token != params[:token]
-    return "Unable to find this request"
-  end
-  room_request.accept
-  # TODO: send email
-  flash[:notice] = "You have accepted a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
+  require_valid_room_request
+  @room_request.accept
+  flash[:notice] = "You have accepted a room request from #{@room_request.guest.name}.  Rooms you have available: #{@room_request.host.available_rooms}"
   redirect "/"
 end
 
 get '/room_requests/:id/decline/:token' do
-  room_request = RoomRequest.get(params[:id])
-  if room_request.token != params[:token]
-    return "Unable to find this request"
-  end
-  room_request.decline
-  # TODO: send email
-  flash[:notice] = "You have declined a room request from #{room_request.guest.name}.  Rooms you have available: #{room_request.host.available_rooms}"
+  require_valid_room_request
+  @room_request.decline
+  flash[:notice] = "You have declined a room request from #{@room_request.guest.name}.  Rooms you have available: #{@room_request.host.available_rooms}"
   redirect "/"
 end

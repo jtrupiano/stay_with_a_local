@@ -7,7 +7,7 @@
 .grid_4.omega#selected_host
   .container_4
     .grid_2.alpha
-      %img
+      %img#photo
     .grid_2.omega
       %h3
       %p#rooms_available
@@ -19,12 +19,24 @@
       %p#description
       %h4#staying_with
       #guests
-    .grid_4.alpha.omega#login
-      %p 
-        In order to request a room, you must be on our 
-        %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list of RailsConf speakers
-        and logged into your twitter account.  If you are speaking and do not see your name on this list, please tweet 
-        %a{:href => 'http://twitter.com/bmoreonrails'}@bmoreonrails.
+    - if logged_in?
+      - if booked?
+        .grid_4.alpha.omega#booked
+          %p You have already booked a room with #{@guest.host.name}.
+      .grid_4.alpha.omega#logout
+        %p
+          %a{:href => '/logout'} Sign out
+    - else
+      .grid_4.alpha.omega#login
+        %p 
+          In order to request a room, you must be on our 
+          %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list of RailsConf speakers
+          and logged into your twitter account.  If you are speaking and do not see your name on this list, please tweet 
+          %a{:href => 'http://twitter.com/bmoreonrails'}<@bmoreonrails
+          and we'll add you.
+        %p
+          %a{:href => '/twitter'}
+            %img{:src => '/images/sign-in-with-twitter-darker.png', :alt => 'Sign in with Twitter'}
 
 .grid_12.alpha.omega
   %p Click the photos below to see where our homes are in relation to the convention center.
@@ -35,9 +47,9 @@
 :javascript
   var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
-  function is_logged_in() {
-    return #{@has_access ? 'true' : 'false'};
-  }
+  function can_reserve() { return #{can_reserve? ? 'true' : 'false'}; }
+  function logged_in() { return #{logged_in? ? 'true' : 'false'}; }
+  function already_booked() { return #{logged_in? && !can_reserve? ? 'true' : 'false'}; }
   
   function showHost(host, map) {
     // remove any existing markers
@@ -57,8 +69,8 @@
     }
     $('#selected_host').hide();
     $('#selected_host h3').html(host.name);
-    $('#selected_host img').attr("src", host.image_path);
-    $('#selected_host img').attr("alt", host.name);
+    $('#selected_host #photo').attr("src", host.image_path);
+    $('#selected_host #photo').attr("alt", host.name);
     $('#selected_host #description').html(host.description);
     var rooms_str = "has " + host.available_rooms + " available room";
     if (host.available_rooms != 1) {
@@ -78,28 +90,26 @@
       $('#staying_with').text("Staying with " + host.first_name);
       var guests_html = "";
       $.each(host.guests, function(index, guest) {
-        guests_html += "<p>" + guest.name + "</p>";
+        guests_html += "<p><img class='guest' src='" + guest.image_url + "' alt='" + guest.name + "' /><a href='http://twitter.com/" + guest.twitter + "'>" + guest.name + "</a></p>";
       });
       $('#guests').html(guests_html);
     } else {
       $('#staying_with').text('');
       $('#guests').html('');
     }
-    if (host.available_rooms == 0) {
-      $('#selected_host img').addClass("booked");
+    
+    if (!can_reserve() || host.available_rooms == 0) {
       $('#selected_host #stay').hide();
     } else {
-      $('#selected_host img').removeClass("booked");
       $('#selected_host #stay').show();
+    }
+        
+    if (host.available_rooms == 0) {
+      $('#selected_host #photo').addClass("booked");
+    } else {
+      $('#selected_host #photo').removeClass("booked");
     }
     
-    if (is_logged_in()) {
-      $('#selected_host #stay').show();
-      $('#selected_host #login').hide();
-    } else {
-      $('#selected_host #stay').hide();
-      $('#selected_host #login').show();
-    }
     $('#selected_host').fadeIn('slow');
   }
 

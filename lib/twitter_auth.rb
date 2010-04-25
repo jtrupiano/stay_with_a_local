@@ -19,6 +19,7 @@ module TwitterAuth
   end
 
   def login_from_twitter
+    return if logged_in? && !returning_from_twitter?
     twitter_client.authorize(
       session[:request_token],
       session[:request_token_secret],
@@ -28,7 +29,7 @@ module TwitterAuth
     user_info = twitter_client.info
     guest = Guest.first(:twitter => user_info['screen_name'])
     if guest.nil? && list_members_by_twitter_name.include?(user_info['screen_name'])
-      Guest.create!(:twitter => user_info['screen_name'], :name => user_info['name'])
+      Guest.create!(:twitter => user_info['screen_name'], :name => user_info['name'], :image_url => user_info['profile_image_url'])
     end
     if guest.nil?
       session.delete(:guest_id)
@@ -58,7 +59,7 @@ module TwitterAuth
     list_members = twitter_client.list_members('bmoreonrails', 'railsconf-2010-speakers')['users'].map{|user_info| user_info['screen_name']}
   end
   
-  def has_access?
+  def logged_in?
     session[:guest_id]
   end
 end
