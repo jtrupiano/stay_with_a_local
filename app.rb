@@ -7,7 +7,6 @@ require 'compass' # must be loaded before sinatra
 
 # Load Sinatra
 require 'sinatra'
-# TODO: Google analytics
 require 'lib/render_partial'
 
 require 'haml' # must be loaded after sinatra
