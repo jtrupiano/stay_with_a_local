@@ -4,6 +4,7 @@ class Guest
   property :id, Serial
   property :name, String
   property :twitter, String
+  property :image_url, String, :size => 100
   
   has n, :room_requests
   
