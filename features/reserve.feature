@@ -75,7 +75,6 @@ Feature: Reserve a room
     When I try to stay with "Paul Barry"
     Then I should see "You've already booked a room"
 
-  @now
   Scenario: A host accepts a room request for someone that is already accepted
     Given "drnic" has submitted a room request to "Matt Scilipoti"
     And "drnic" has submitted a room request to "David Robson"
@@ -84,3 +83,8 @@ Feature: Reserve a room
     
     When "Matt Scilipoti" accepts the room request from "drnic"
     Then I should see "drnic has already booked a room with David Robson"
+
+  Scenario: A non-host logs in through twitter
+    When I authenticate with twitter as "jtrupiano" but am not a host
+    And I view the rooms available
+    Then I should see "@jtrupiano is not on our list of speakers"
