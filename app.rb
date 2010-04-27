@@ -110,8 +110,12 @@ get '/stylesheets/:name.css' do
 end
 
 get '/' do
-  login_from_twitter
   haml :index, :layout => :'/layouts/page'
+end
+
+get '/twitter_callback' do
+  login_from_twitter
+  redirect "/"
 end
 
 get '/twitter' do

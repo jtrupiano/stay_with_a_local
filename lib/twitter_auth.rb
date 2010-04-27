@@ -2,10 +2,10 @@ TWITTER_CONSUMER_KEY      = 'A4slsVEhbSjEqmRkGDudw'
 TWITTER_CONSUMER_SECRET   = 'Bh9jGXYe7MXVCIFp0rcTYfvWCPUnFXvtBwBthONdao'
 
 configure :development do
-  TWITTER_CALLBACK_URL      = 'http://localhost:4567'
+  TWITTER_CALLBACK_URL      = 'http://localhost:4567/twitter_callback'
 end
 configure :production do
-  TWITTER_CALLBACK_URL      = 'http://stay-with-a-local.slslabs.com'
+  TWITTER_CALLBACK_URL      = 'http://stay-with-a-local.slslabs.com/twitter_callback'
 end
 
 require 'twitter_oauth'
@@ -19,7 +19,6 @@ module TwitterAuth
   end
 
   def login_from_twitter
-    return if logged_in? && !returning_from_twitter?
     twitter_client.authorize(
       session[:request_token],
       session[:request_token_secret],
@@ -33,11 +32,14 @@ module TwitterAuth
     end
     if guest.nil?
       session.delete(:guest_id)
+      flash[:error] = "@#{user_info['screen_name']} is not on our list of speakers. Please tweet <a href='http://twitter.com/bmoreonrails'>@bmoreonrails</a> if you should be on the list."
     else
       session[:guest_id] = guest.id
+      flash[:notice] = "You have successfully authenticated with twitter as a speaker."
     end
   rescue OAuth::Unauthorized
     session.delete(:guest_id)
+    flash[:error] = "Twitter was unable to authenticate you."
   ensure
     session.delete(:request_token)
     session.delete(:request_token_secret)
