@@ -95,6 +95,11 @@ helpers do
   def can_reserve?
     logged_in? && !booked?
   end
+  
+  def guest_name
+    @guest = Guest.get(session[:guest_id])
+    @guest && @guest.twitter
+  end
 end
 
 # At a minimum the main sass file must reside within the views directory

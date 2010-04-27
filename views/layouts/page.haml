@@ -6,31 +6,31 @@
     %title Stay with a Local | RailsConf | B'more on Rails
     %link{:href=>'/stylesheets/grid.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
     %link{:href=>'/stylesheets/text.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
+    %link{:href=>'/bmoreonrails.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
     %link{:href=>'/stylesheets/application.css', :rel => 'stylesheet', :media => "screen", :type => "text/css"}
     %script{:type => "text/javascript", :src => "/javascripts/lib/jquery-1.3.2.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/site.js"}
     %script{:type => "text/javascript", :src => "http://maps.google.com/maps/api/js?sensor=false"}
   %body
-    #header.container_12
-      .grid_2.alpha
-        %a{:href => 'http://bmoreonrails.org'}
-          %img#logo{:src => '/images/bmore-on-rails.png'}
-      .grid_6
-        %h1 Stay with a Local
-      .grid_4.omega
-        %p
-          As part of a larger effort to welcome the rails community to Baltimore for RailsConf 2010, 
-          %a{:href => 'http://bmoreonrails.org'} B'more on Rails
-          has organized a room-share for RailsConf speakers.  We have 12 rooms available to house speakers 
-          for the duration of the conference.  We see it as an opportunity to welcome you to our city and
-          for us to create a few new friendships.
-    #content.container_12
+    .container_12
+      - if flash[:notice]
+        #notice= flash[:notice]
+      - if flash[:error]
+        #error= flash[:error]
+
+    - if logged_in?
+      #status.container_12
+        You are logged in as #{guest_name}
+        %a{:href => '/logout'} Sign out
+    
+    #content.container_12.clear
       = yield
     %br.clear
     #footer.container_12
+      %hr
       %p
-        Site created by <a href='http://smartlogicsolutions.com/john'>John Trupiano</a>, <a href='http://twitter.com/jonathanjulian'>Jonathan Julian</a>, and <a href='http://twitter.com/pjb3'>Paul Barry</a>.
-        Code is <a href='http://github.com/jtrupiano/stay-with-a-local'>hosted at github</a>.
+        Site created by <a href='http://smartlogicsolutions.com/john'>John Trupiano</a>, <a href='http://jonathanjulian.com/about/'>Jonathan Julian</a>, and <a href='http://paulbarry.com'>Paul Barry</a>.
+        Code is <a href='http://github.com/jtrupiano/stay_with_a_local'>hosted at github</a>.
         / Check out these other cool things we're doing to welcome the rails community.
         / %a{:href => 'http://alehouse.heroku.com'} B'more on Ales
         / %a{:href => 'http://bmoreguests.info'} B'more Guests

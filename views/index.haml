@@ -1,49 +1,66 @@
-.grid_8.alpha
-  - if flash[:notice]
-    #notice= flash[:notice]
-  - if flash[:error]
-    #error= flash[:error]
-  #map_canvas{:style => 'height:400px;width:600px;margin-bottom:15px'}
-.grid_4.omega#selected_host
-  .container_4
+#header.container_12.alpha
+  .grid_2
+    %a{:href => 'http://bmoreonrails.org'}
+      %img#logo{:src => '/images/bmore-on-rails.png'}
+    %h1#title
+      %span
+        Stay
+      %span
+        with a
+      %span
+        Local
+  .grid_4#intro
+    %h2 Hi!
+    %p
+      As part of a larger effort to welcome the Rails community to Baltimore for <a href="http://railsconf.com">RailsConf 2010</a>,
+      %a{:href => 'http://bmoreonrails.org'} B'more on Rails
+      has organized a room-share for RailsConf speakers.  We have 12 private rooms available to speakers 
+      for the duration of the conference.  We see it as an opportunity to welcome you to our city and
+      for us to create a few new friendships.
+  .grid_3
+    %h2 Step 1
+    %h3 Sign in with Twitter
+    %p 
+      In order to request a room, you must be on our 
+      %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list
+      of RailsConf speakers and logged into your twitter account. If you are speaking at RailsConf and do not see the "Reserve a Room" button, tweet 
+      %a{:href => 'http://twitter.com/bmoreonrails'} @bmoreonrails
+      and we'll be sure to add you.
+      %p
+        - if !logged_in?
+          %a{:href => '/twitter'}
+            %img{:src => '/images/sign-in-with-twitter-darker.png', :alt => 'Sign in with Twitter'}
+  .grid_3
+    %h2 Step 2
+    %h3 Reserve a Room
+    %p
+      Click on the photo of one of the hosts, check out their profile, see where our homes are in relation to the convention center, and when you've found a host you'd like to room with, click to "Reserve a Room." The rest will be handled over email.
+
+.grid_12.alpha.omega
+  #hosts
+    - Host.all(:order => "name").each do |host|
+      %img{:id => "host_#{host.id}", :src => host.image_path, :class => "#{host.available_rooms.zero? ? 'booked' : ''}" }
+      
+.grid_6.alpha
+  #map_canvas{:style => 'height:350px;width:450px;margin-bottom:15px'}
+.grid_6.omega#selected_host
+  .container_6
     .grid_2.alpha
       %img#photo
-    .grid_2.omega
+    .grid_4.omega
       %h3
       %p#rooms_available
       %p
         %a#twitter{:target => '_blank'}
       %a#stay
-  .container_4
-    .grid_4.alpha.omega
+    .grid_6.alpha.omega
       %p#description
       %h4#staying_with
       #guests
-    - if logged_in?
-      - if booked?
-        .grid_4.alpha.omega#booked
-          %p You have already booked a room with #{@guest.host.name}.
-      .grid_4.alpha.omega#logout
-        %p
-          %a{:href => '/logout'} Sign out
-    - else
-      .grid_4.alpha.omega#login
-        %p 
-          In order to request a room, you must be on our 
-          %a{:href => 'http://twitter.com/bmoreonrails/railsconf-2010-speakers'} twitter list of RailsConf speakers
-          and logged into your twitter account.  If you are speaking and do not see your name on this list, please tweet 
-          %a{:href => 'http://twitter.com/bmoreonrails'}<@bmoreonrails
-          and we'll add you.
-        %p
-          %a{:href => '/twitter'}
-            %img{:src => '/images/sign-in-with-twitter-darker.png', :alt => 'Sign in with Twitter'}
+    - if logged_in? && booked?
+      .grid_6.alpha.omega#booked
+        %p You have already booked a room with #{@guest.host.name}.
 
-.grid_12.alpha.omega
-  %p Click the photos below to see where our homes are in relation to the convention center.
-  #hosts
-    - Host.all(:order => "name").each do |host|
-      %img{:id => "host_#{host.id}", :src => host.image_path, :class => "#{host.available_rooms.zero? ? 'booked' : ''}" }
-      
 :javascript
   var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
 
@@ -118,7 +135,8 @@
     var map = new google.maps.Map(document.getElementById("map_canvas"), {
       zoom: 11,
       center: convention_center,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false
     });
     var marker = new google.maps.Marker({
       position: convention_center, 
