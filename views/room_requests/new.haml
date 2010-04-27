@@ -1,15 +1,18 @@
-#room_request.grid_10
-  %img{:src => @host.image_path, :alt => @host.name}
-  %h1 Request a Room with #{@host.name}
-  %p Enter any comments or questions that you may have for #{@host.first_name}.  You will receive an email after #{@host.first_name} has either confirmed or denied the room request.
-  %form{ :method => "POST", :action => "/hosts/#{@host.id}/room_requests"}
-    %label{ :for => "email" } Email
-    %br
-    %input{ :type => 'text', :id => 'email', :name => 'email', :size => 50 }
-    %br
-    %label{ :for => "comments" } Comments
-    %br
-    %textarea{ :id => "comments", :name => "comments", :rows => 10, :cols => 80 }
-    %br
-    %button{ :type => "submit" } Stay With #{@host.first_name}!
+.container_12
+  #header.grid_2
+    = partial :_site_name
+  #room_request.grid_8
+    %h1 Request a Room with #{@host.name}
+    %img{:src => @host.image_path, :alt => @host.name}
+    %p Enter any comments or questions that you may have for #{@host.first_name}.  You will receive an email after #{@host.first_name} has either confirmed or denied the room request.
+    %form{ :method => "POST", :action => "/hosts/#{@host.id}/room_requests"}
+      %label{ :for => "email" } Email
+      %br
+      %input{ :type => 'text', :id => 'email', :name => 'email', :size => 50 }
+      %br
+      %label{ :for => "comments" } Comments
+      %br
+      %textarea{ :id => "comments", :name => "comments", :rows => 10, :cols => 70 }
+      %br
+      %button{ :type => "submit" } Stay With #{@host.first_name}!
   
