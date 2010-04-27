@@ -44,24 +44,22 @@
 .grid_6.alpha
   #map_canvas{:style => 'height:350px;width:450px;margin-bottom:15px'}
 .grid_6.omega#selected_host
-  .container_4
+  .container_6
     .grid_2.alpha
       %img#photo
-    .grid_2.omega
+    .grid_4.omega
       %h3
       %p#rooms_available
       %p
         %a#twitter{:target => '_blank'}
       %a#stay
-  .container_4
-    .grid_4.alpha.omega
+    .grid_6.alpha.omega
       %p#description
       %h4#staying_with
       #guests
-    - if logged_in?
-      - if booked?
-        .grid_4.alpha.omega#booked
-          %p You have already booked a room with #{@guest.host.name}.
+    - if logged_in? && booked?
+      .grid_6.alpha.omega#booked
+        %p You have already booked a room with #{@guest.host.name}.
 
 :javascript
   var hosts = #{Host.all(:order => "name").to_json(:methods => [:image_path, :first_name, :guests])};
