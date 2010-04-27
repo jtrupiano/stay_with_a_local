@@ -135,7 +135,8 @@
     var map = new google.maps.Map(document.getElementById("map_canvas"), {
       zoom: 11,
       center: convention_center,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false
     });
     var marker = new google.maps.Marker({
       position: convention_center, 
