@@ -102,7 +102,7 @@
       $('#staying_with').text("Staying with " + host.first_name);
       var guests_html = "";
       $.each(host.guests, function(index, guest) {
-        guests_html += "<p><img class='guest' src='" + url_for(guest.image_url) + "' alt='" + guest.name + "' /><a href='http://twitter.com/" + guest.twitter + "'>" + guest.name + "</a></p>";
+        guests_html += "<p><img class='guest' src='" + guest.image_url + "' alt='" + guest.name + "' /><a href='http://twitter.com/" + guest.twitter + "'>" + guest.name + "</a></p>";
       });
       $('#guests').html(guests_html);
     } else {
