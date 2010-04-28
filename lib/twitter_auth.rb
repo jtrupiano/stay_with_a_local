@@ -21,7 +21,7 @@ module TwitterAuth
     user_info = twitter_client.info
     guest = Guest.first(:twitter => user_info['screen_name'])
     if guest.nil? && list_members_by_twitter_name.include?(user_info['screen_name'])
-      Guest.create!(:twitter => user_info['screen_name'], :name => user_info['name'], :image_url => user_info['profile_image_url'])
+      guest = Guest.create!(:twitter => user_info['screen_name'], :name => user_info['name'], :image_url => user_info['profile_image_url'])
     end
     if guest.nil?
       session.delete(:guest_id)
