@@ -1,7 +1,6 @@
-TWITTER_CONSUMER_KEY      = 'A4slsVEhbSjEqmRkGDudw'
-TWITTER_CONSUMER_SECRET   = 'Bh9jGXYe7MXVCIFp0rcTYfvWCPUnFXvtBwBthONdao'
 TWITTER_CALLBACK_URL      = "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}/twitter_callback"
 
+require 'twitter_config'
 require 'twitter_oauth'
 
 module TwitterAuth
