@@ -8,22 +8,22 @@ class Mailer
   end
   
   def self.send_request_email(room_request)
-    email_body = haml(:'mailer/room_request', :host => Sinatra::Application.host, :room_request => room_request)
+    email_body = haml(:'mailer/room_request', :host => "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}", :room_request => room_request)
     mail = Mail.new do
       body email_body
-      from 'no-reply@localhost.com'
+      from "B'more on Rails <no-reply@localhost.com>"
       to room_request.host.email
-      subject "A room has been requested by #{room_request.guest.name}"
+      subject "Your room has been requested by #{room_request.guest.name} for RailsConf"
       content_type "text/html"
     end
     mail.deliver!
   end
   
   def self.send_confirmation_email(room_request)
-    email_body = haml(:'mailer/confirmation', :host => Sinatra::Application.host, :room_request => room_request)
+    email_body = haml(:'mailer/confirmation', :host => "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}", :room_request => room_request)
     mail = Mail.new do
       body email_body
-      from 'no-reply@localhost.com'
+      from "B'more on Rails <no-reply@localhost.com>"
       to room_request.email
       subject "#{room_request.host.name} has accepted your room request for RailsConf"
       content_type "text/html"
@@ -32,10 +32,10 @@ class Mailer
   end
   
   def self.send_declination_email(room_request)
-    email_body = haml(:'mailer/declination', :host => Sinatra::Application.host, :room_request => room_request)
+    email_body = haml(:'mailer/declination', :host => "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}", :room_request => room_request)
     mail = Mail.new do
       body email_body
-      from 'no-reply@localhost.com'
+      from "B'more on Rails <no-reply@localhost.com>"
       to room_request.email
       subject "#{room_request.host.name} has declined your room request for RailsConf"
       content_type "text/html"
