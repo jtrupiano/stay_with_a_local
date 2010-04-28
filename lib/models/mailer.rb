@@ -8,7 +8,7 @@ class Mailer
   end
   
   def self.send_request_email(room_request)
-    email_body = haml(:'mailer/room_request', :host => Sinatra::Application.host, :room_request => room_request)
+    email_body = haml(:'mailer/room_request', :host => "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}", :room_request => room_request)
     mail = Mail.new do
       body email_body
       from "B'more on Rails <no-reply@localhost.com>"
@@ -20,7 +20,7 @@ class Mailer
   end
   
   def self.send_confirmation_email(room_request)
-    email_body = haml(:'mailer/confirmation', :host => Sinatra::Application.host, :room_request => room_request)
+    email_body = haml(:'mailer/confirmation', :host => "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}", :room_request => room_request)
     mail = Mail.new do
       body email_body
       from "B'more on Rails <no-reply@localhost.com>"
@@ -32,7 +32,7 @@ class Mailer
   end
   
   def self.send_declination_email(room_request)
-    email_body = haml(:'mailer/declination', :host => Sinatra::Application.host, :room_request => room_request)
+    email_body = haml(:'mailer/declination', :host => "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}", :room_request => room_request)
     mail = Mail.new do
       body email_body
       from "B'more on Rails <no-reply@localhost.com>"

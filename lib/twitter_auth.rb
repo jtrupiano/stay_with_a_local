@@ -2,7 +2,7 @@ TWITTER_CONSUMER_KEY      = 'A4slsVEhbSjEqmRkGDudw'
 TWITTER_CONSUMER_SECRET   = 'Bh9jGXYe7MXVCIFp0rcTYfvWCPUnFXvtBwBthONdao'
 
 configure :development do
-  TWITTER_CALLBACK_URL      = 'http://localhost:4567/twitter_callback'
+  TWITTER_CALLBACK_URL      = "#{Sinatra::Application.host}#{Sinatra::Application.subdirectory}/twitter_callback"
 end
 configure :production do
   TWITTER_CALLBACK_URL      = 'http://stay-with-a-local.slslabs.com/twitter_callback'

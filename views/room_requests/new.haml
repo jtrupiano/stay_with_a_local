@@ -3,9 +3,9 @@
     = partial :_site_name
   #room_request.grid_8
     %h1 Request a Room with #{@host.name}
-    %img{:src => @host.image_path, :alt => @host.name}
+    %img{:src => url_for(@host.image_path), :alt => @host.name}
     %p Enter any comments or questions that you may have for #{@host.first_name}.  You will receive an email after #{@host.first_name} has either confirmed or denied the room request.
-    %form{ :method => "POST", :action => "/hosts/#{@host.id}/room_requests"}
+    %form{ :method => "POST", :action => url_for("/hosts/#{@host.id}/room_requests")}
       %label{ :for => "email" } Email
       %br
       %input{ :type => 'text', :id => 'email', :name => 'email', :size => 50 }

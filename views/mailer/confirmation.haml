@@ -1,8 +1,6 @@
 %p Hi #{room_request.guest.name},
 %p 
-  #{room_request.host.name} has accepted your request for a room during RailsConf.  Feel free to contact him/her directly at 
-  %a{ :href => "mailto:#{room_request.host.email}"}> #{room_request.host.email}
-  \.
+  #{room_request.host.name} has accepted your request for a room during RailsConf.  Feel free to contact him/her directly at <a href="mailto:#{room_request.host.email}">#{room_request.host.email}</a>.
 %p Best,
 %img{:src => "#{host}/images/bmore-on-rails.png"}
 %p Stay with a Local

@@ -32,11 +32,17 @@ configure :development, :cucumber do
   DataMapper.auto_migrate!
 end
 
-configure :development, :cucumber do
-  set :host, "http://localhost:4567"
+configure :development do
+  set :host, "http://local.local"
+  set :subdirectory, "/swal"
+end
+configure :cucumber do
+  set :host, "http://localhost"
+  set :subdirectory, ""
 end
 configure :production do
-  set :host, "http://stay-with-a-local.slslabs.com"
+  set :host, "http://bmoreonrails.org"
+  set :subdirectory, "/stay-with-a-local"
 end
 
 require 'mailer'
@@ -100,6 +106,14 @@ helpers do
     @guest = Guest.get(session[:guest_id])
     @guest && @guest.twitter
   end
+  
+  def url_for(rooted_path)
+    "#{Sinatra::Application.subdirectory}#{rooted_path}"
+  end
+  
+  def full_url_for(rooted_path)
+    "#{Sinatra::Application.host}#{url_for(rooted_path)}"
+  end
 end
 
 # At a minimum the main sass file must reside within the views directory
@@ -109,13 +123,13 @@ get '/stylesheets/:name.css' do
   sass(:"stylesheets/#{params[:name]}", Compass.sass_engine_options)
 end
 
-get '/' do
+get '/?' do
   haml :index, :layout => :'/layouts/page'
 end
 
 get '/twitter_callback' do
   login_from_twitter
-  redirect "/"
+  redirect url_for("/")
 end
 
 get '/twitter' do
@@ -124,7 +138,7 @@ end
 
 get '/logout' do
   session.delete(:guest_id)
-  redirect "/"
+  redirect url_for("/")
 end
 
 get '/hosts/:id/room_requests/new' do
@@ -138,19 +152,19 @@ post '/hosts/:id/room_requests' do
   require_unbooked_host
   room_request = RoomRequest.create :host => @host, :guest => @guest, :comments => params[:comments], :email => params[:email]
   flash[:notice] = "You have submitted a room request to #{@host.name}.  You will receive email confirmation when the request has been accepted or declined."
-  redirect "/"
+  redirect url_for("/")
 end
 
 get '/room_requests/:id/accept/:token' do
   require_valid_room_request
   @room_request.accept
   flash[:notice] = "You have accepted a room request from #{@room_request.guest.name}.  Rooms you have available: #{@room_request.host.available_rooms}"
-  redirect "/"
+  redirect url_for("/")
 end
 
 get '/room_requests/:id/decline/:token' do
   require_valid_room_request
   @room_request.decline
   flash[:notice] = "You have declined a room request from #{@room_request.guest.name}.  Rooms you have available: #{@room_request.host.available_rooms}"
-  redirect "/"
+  redirect url_for("/")
 end
