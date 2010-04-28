@@ -15,6 +15,7 @@
            Paul Campbell @paulca
          David Chelimsky @dchelimsky
               Mike Clark @clarkware 
+              Joe Damato @joedamato
            Blythe Dunham 
             Anthony Eden @aeden
              Cody Fauser @codyfauser
