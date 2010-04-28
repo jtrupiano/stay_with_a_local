@@ -62,7 +62,7 @@ def require_unbooked_guest
   else
     return true
   end
-  redirect "/"
+  redirect url_for("/")
   halt
 end
 
@@ -70,7 +70,7 @@ def require_unbooked_host
   @host = Host.get(params[:id])
   if @host.available_rooms < 1    
     flash[:error] = "#{@host.name} no longer has any rooms available."
-    redirect "/"
+    redirect url_for("/")
     halt
   end
 end
@@ -88,7 +88,7 @@ def require_valid_room_request
   else
     return true
   end
-  redirect "/"
+  redirect url_for("/")
   halt
 end
 
