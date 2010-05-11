@@ -56,7 +56,7 @@ include TwitterAuth
 
 def require_unbooked_guest
   if !logged_in?
-    flash[:error] = "You must be logged into twitter as a registered speaker to reserve a room."
+    flash[:error] = "You must be logged into twitter to reserve a room."
   elsif booked?
     flash[:error] = "You've already booked a room!"
   else

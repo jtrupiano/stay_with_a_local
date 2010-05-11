@@ -24,7 +24,7 @@ module TwitterAuth
       guest = Guest.create!(:twitter => user_info['screen_name'], :name => user_info['name'], :image_url => user_info['profile_image_url'])
     end
     session[:guest_id] = guest.id
-    flash[:notice] = "You have successfully authenticated with twitter as a speaker."
+    flash[:notice] = "You have successfully authenticated with twitter."
   rescue OAuth::Unauthorized
     session.delete(:guest_id)
     flash[:error] = "Twitter was unable to authenticate you."
