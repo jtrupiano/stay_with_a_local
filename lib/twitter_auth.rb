@@ -20,16 +20,11 @@ module TwitterAuth
 
     user_info = twitter_client.info
     guest = Guest.first(:twitter => user_info['screen_name'])
-    if guest.nil? && list_members_by_twitter_name.include?(user_info['screen_name'])
+    if guest.nil?
       guest = Guest.create!(:twitter => user_info['screen_name'], :name => user_info['name'], :image_url => user_info['profile_image_url'])
     end
-    if guest.nil?
-      session.delete(:guest_id)
-      flash[:error] = "@#{user_info['screen_name']} is not on our list of speakers. Please tweet <a href='http://twitter.com/bmoreonrails'>@bmoreonrails</a> if you should be on the list."
-    else
-      session[:guest_id] = guest.id
-      flash[:notice] = "You have successfully authenticated with twitter as a speaker."
-    end
+    session[:guest_id] = guest.id
+    flash[:notice] = "You have successfully authenticated with twitter as a speaker."
   rescue OAuth::Unauthorized
     session.delete(:guest_id)
     flash[:error] = "Twitter was unable to authenticate you."
@@ -47,17 +42,6 @@ module TwitterAuth
 
   def returning_from_twitter?
     params[:oauth_verifier] && session[:request_token]
-  end
-  
-  # can only be called on the same request in which authorization is handled
-  def list_members_by_twitter_name
-    resp = OpenStruct.new(:next_cursor => -1)
-    list_members = []
-    while (resp.next_cursor != 0)
-      resp = twitter_client.list_members('bmoreonrails', 'railsconf-2010-speakers', :cursor => resp.next_cursor)
-      list_members += resp['users'].map{|user_info| user_info['screen_name']}
-    end
-    list_members
   end
   
   def logged_in?
