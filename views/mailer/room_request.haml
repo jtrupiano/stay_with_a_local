@@ -3,6 +3,12 @@
 %blockquote #{room_request.comments}
 %p
   You can either <a href="#{host}/room_requests/#{room_request.id}/accept/#{room_request.token}">accept the request</a> or <a href="#{host}/room_requests/#{room_request.id}/decline/#{room_request.token}">decline the request</a>.
+  
+%p 
+  #{room_request.guest.name} can be reached by email at:
+  %a{:href => "mailto:#{room_request.email}"}
+    = room_request.email
+
 %p Best,
 %img{:src => "#{host}/images/bmore-on-rails.png"}
 %p Stay with a Local
