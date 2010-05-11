@@ -51,7 +51,13 @@ module TwitterAuth
   
   # can only be called on the same request in which authorization is handled
   def list_members_by_twitter_name
-    list_members = twitter_client.list_members('bmoreonrails', 'railsconf-2010-speakers')['users'].map{|user_info| user_info['screen_name']}
+    resp = OpenStruct.new(:next_cursor => -1)
+    list_members = []
+    while (resp.next_cursor != 0)
+      resp = twitter_client.list_members('bmoreonrails', 'railsconf-2010-speakers', :cursor => resp.next_cursor)
+      list_members += resp['users'].map{|user_info| user_info['screen_name']}
+    end
+    list_members
   end
   
   def logged_in?
