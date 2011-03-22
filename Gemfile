@@ -11,6 +11,7 @@ gem 'mail', '= 2.2.0'
 gem 'rack-flash', '= 0.1.1'
 gem 'oauth', '= 0.3.6'
 gem 'twitter_oauth', '= 0.3.3'
+gem 'activesupport', '= 2.3.6'
 
 group :development do
   gem 'do_mysql', '= 0.10.1'
